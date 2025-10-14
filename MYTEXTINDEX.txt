@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="kn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ: ಸಂಪರ್ಕ ಮತ್ತು ನೋಂದಣಿ</title>
+    <!-- Tailwind CSS ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@100..900&family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Noto Sans Kannada', 'Inter', sans-serif;
+            background-color: #fcfcfc;
+        }
+
+        .yaksha-bg {
+            background-color: #4B0082;
+        }
+
+        .yaksha-text {
+            color: #ffcc00;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .yaksha-crimson {
+            background-color: #AA2C2C;
+        }
+
+        .yaksha-crimson-hover:hover {
+            background-color: #C7384E;
+        }
+
+        .yaksha-crimson-text {
+            color: #AA2C2C;
+        }
+
+        .yaksha-crimson-border {
+            border-color: #AA2C2C;
+        }
+
+        .yaksha-light-gold {
+            background-color: #fffbeb;
+        }
+
+        .pt-\[56\.25\%\] {
+            padding-top: 56.25%;
+        }
+
+        .donor-list {
+            max-height: 200px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #AA2C2C #fffbeb;
+        }
+
+        .donor-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .donor-list::-webkit-scrollbar-thumb {
+            background-color: #AA2C2C;
+            border-radius: 4px;
+        }
+
+        .donor-list::-webkit-scrollbar-track {
+            background: #fffbeb;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-10">
+    <div class="max-w-7xl mx-auto rounded-3xl overflow-hidden shadow-2xl bg-white">
+        <header class="yaksha-bg text-center py-10 md:py-16 border-b-4 border-yellow-500">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white yaksha-text tracking-tight">ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ</h1>
+            <p class="text-white text-xl md:text-2xl mt-3 font-light">ತೆಂಕುತಿಟ್ಟು ಶೈಲಿ | ಕಲಾಭಿಮಾನಿಗಳಿಗಾಗಿ ಒಂದು ವೇದಿಕೆ</p>
+            <p class="text-yellow-300 text-lg md:text-xl mt-4 font-semibold opacity-90">ಮುಳ್ಳೇರಿಯ (ಕಾಸರಗೋಡು ಜಿಲ್ಲೆ)</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-12 p-6 md:p-16">
+            <section class="lg:col-span-2 text-gray-700">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-yaksha-crimson-border pb-2">ಕಲೆಯ ಪರಿಚಯ ಮತ್ತು ಗುರುಗಳ ಮಾರ್ಗದರ್ಶನ</h2>
+                <p class="mb-6 text-lg leading-relaxed">ಯಕ್ಷಗಾನವು ಕರ್ನಾಟಕದ ಕರಾವಳಿ ಜಿಲ್ಲೆಗಳ ಒಂದು ವಿಶಿಷ್ಟವಾದ ಕಲಾ ಪ್ರಕಾರವಾಗಿದೆ. ನಮ್ಮ &apos;ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ&apos;ವು ಪ್ರಸಿದ್ಧ ಗುರುಗಳಾದ <strong class="yaksha-crimson-text">ಶ್ರೀ ಸೂರ್ಯನಾರಾಯಣ ಪಾದಕಣ್ಣಾಯ, ಬಾಯಾರು</strong> ಅವರ ಮಾರ್ಗದರ್ಶನದಲ್ಲಿ **ತೆಂಕುತಿಟ್ಟು** ಶೈಲಿಯನ್ನು ಕಲಿಸುತ್ತದೆ. ಇದು ನೃತ್ಯ, ನಾಟಕ, ಸಂಗೀತ, ಸಂಭಾಷಣೆ ಮತ್ತು ವರ್ಣರಂಜಿತ ವೇಷಭೂಷಣಗಳನ್ನು ಸಂಯೋಜಿಸುವ ಕಲಾಭ್ಯಾಸಕ್ಕೆ ಸೂಕ್ತವಾದ ವೇದಿಕೆಯನ್ನು ಒದಗಿಸುತ್ತದೆ.</p>
+
+                <h3 class="text-2xl font-semibold text-gray-800 mt-10 mb-4">ತರಗತಿ ಮತ್ತು ಸಂಪರ್ಕ ವಿವರಗಳು</h3>
+                <ul class="list-none space-y-3 text-base p-5 yaksha-light-gold rounded-xl shadow-inner border border-gray-200">
+                    <li><strong class="font-semibold yaksha-crimson-text">ಶೈಲಿ:</strong> ತೆಂಕುತಿಟ್ಟು ಯಕ್ಷಗಾನ.</li>
+                    <li><strong class="font-semibold yaksha-crimson-text">ಗುರುಗಳು:</strong> ಶ್ರೀ ಸೂರ್ಯನಾರಾಯಣ ಪಾದಕಣ್ಣಾಯ, ಬಾಯಾರು.</li>
+                    <li><strong class="font-semibold yaksha-crimson-text">ಸಮಯ:</strong> ಪ್ರತೀ ಭಾನುವಾರ 1:45 PM ರಿಂದ 3:45 PM ರವರೆಗೆ.</li>
+                    <li><strong class="font-semibold yaksha-crimson-text">ಸ್ಥಳ:</strong> ಮುಳ್ಳೇರಿಯ, ಕಾಸರಗೋಡು ಜಿಲ್ಲೆ.</li>
+                </ul>
+
+                <div class="mt-16 pt-8 border-t border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b-2 border-yaksha-crimson-border pb-2">ತರಗತಿ ಸ್ಥಳ (Google ನಕ್ಷೆ)</h2>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">ತರಗತಿ ನಡೆಯುವ ಸ್ಥಳ</h3>
+                    <div class="rounded-xl overflow-hidden shadow-xl border-4 border-yaksha-crimson-border">
+                        <div class="relative pt-[56.25%]">
+                            <iframe class="absolute top-0 left-0 w-full h-full" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15579.544646738587!2d75.02107125!3d12.59711685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba4772152862a93%3A0xc3f34563a35d7920!2sMulleria%2C%20Kerala%20671543!5e0!3m2!1sen!2sin!4v1678886000000!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen=""></iframe>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-semibold text-gray-800 mt-10 mb-4 border-b-2 border-yaksha-crimson-border pb-2">ತರಬೇತಿಯ ಅಂಶಗಳು</h3>
+                <ul class="list-disc list-inside space-y-3 text-base ml-4">
+                    <li><strong class="font-medium yaksha-crimson-text">ಅಭ್ಯಾಸ:</strong> ಮೂಲ ಹೆಜ್ಜೆಗಳು, ತಾಳ ಮತ್ತು ಚಂಡೆಯ ಜ್ಞಾನ.</li>
+                    <li><strong class="font-medium yaksha-crimson-text">ವೇಷಭೂಷಣ:</strong> ಮುಖವರ್ಣಿಕೆ (Make-up) ಮತ್ತು ಪ್ರಸಂಗ ಜ್ಞಾನ.</li>
+                    <li><strong class="font-medium yaksha-crimson-text">ತಾಲಿಮು:</strong> ಪ್ರಸಿದ್ಧ ಕಥೆಗಳ ಪ್ರಾಯೋಗಿಕ ಪ್ರದರ್ಶನ.</li>
+                </ul>
+
+                <div class="mt-16 pt-8 border-t border-gray-200">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-8 border-b-2 border-yaksha-crimson-border pb-2">ಮುಂಬರುವ ಕಾರ್ಯಕ್ರಮಗಳು ಮತ್ತು ಪ್ರದರ್ಶನಗಳು</h2>
+                    <p class="text-gray-600 mb-6 text-lg">ನಮ್ಮ ಕೇಂದ್ರದ ಮುಂಬರುವ ಪ್ರದರ್ಶನಗಳು, ತರಗತಿ ವೇಳಾಪಟ್ಟಿ ಮತ್ತು ಕಾರ್ಯಕ್ರಮಗಳ ವಿವರಗಳನ್ನು ಇಲ್ಲಿ ವೀಕ್ಷಿಸಿ.</p>
+                    <ul id="eventsList" class="space-y-4">
+                        <li class="p-4 bg-yaksha-light-gold rounded-xl shadow-inner text-gray-700 text-center">ಕಾರ್ಯಕ್ರಮದ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...</li>
+                    </ul>
+                    <div class="mt-4 text-center"><button id="simulateEventBtn" class="yaksha-crimson-text text-xs font-semibold underline hover:no-underline transition duration-200">&nbsp;[Test] ಹೊಸ ಕಾರ್ಯಕ್ರಮವನ್ನು ಸೇರಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ&nbsp;</button></div>
+                </div>
+
+                <!-- Testimonials, Photo & Video galleries, Donations sections (same as original) -->
+                <!-- ... (Keep your original sections here, unchanged for brevity) ... -->
+
+            </section>
+
+            <section class="lg:col-span-1 bg-white p-8 rounded-3xl shadow-2xl h-fit sticky top-10">
+                <h2 class="text-2xl font-bold yaksha-crimson-text mb-8 text-center border-b border-gray-300 pb-3">ಆನ್&zwnj;ಲೈನ್ ನೋಂದಣಿ ಮತ್ತು ವಿಚಾರಣೆ</h2>
+                <p class="text-sm text-gray-600 mb-6 text-center">ನೋಂದಣಿಗಾಗಿ ಕೆಳಗಿನ ಫಾರ್ಮ್ ಭರ್ತಿ ಮಾಡಿ. ನಿಮ್ಮ ಡೇಟಾ ನೇರವಾಗಿ ಫೈರ್&zwnj;ಸ್ಟೋರ್&zwnj;ನಲ್ಲಿ ಉಳಿಸಲಾಗುತ್ತದೆ.</p>
+
+                <form id="registrationForm" class="space-y-5">
+                    <div><label for="regName" class="block text-sm font-medium text-gray-700 mb-1">ಹೆಸರು</label> 
+                        <input type="text" id="regName" name="name" required placeholder="ನಿಮ್ಮ ಪೂರ್ಣ ಹೆಸರು" class="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-inner focus:ring-4 focus:ring-opacity-30 focus:ring-[#AA2C2C] focus:border-[#AA2C2C] transition duration-200 ease-in-out">
+                    </div>
+                    <div><label for="regEmail" class="block text-sm font-medium text-gray-700 mb-1">ಇಮೇಲ್ ವಿಳಾಸ</label> 
+                        <input type="email" id="regEmail" name="email" required placeholder="ಉದಾಹರಣೆ@mail.com" class="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-inner focus:ring-4 focus:ring-opacity-30 focus:ring-[#AA2C2C] focus:border-[#AA2C2C] transition duration-200 ease-in-out">
+                    </div>
+                    <div><label for="regPhone" class="block text-sm font-medium text-gray-700 mb-1">ಫೋನ್ ಸಂಖ್ಯೆ</label> 
+                        <input type="tel" id="regPhone" name="phone" required placeholder="10 ಅಂಕೆಗಳ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ" class="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-inner focus:ring-4 focus:ring-opacity-30 focus:ring-[#AA2C2C] focus:border-[#AA2C2C] transition duration-200 ease-in-out">
+                    </div>
+                    <div><label for="regMessage" class="block text-sm font-medium text-gray-700 mb-1">ನಿಮ್ಮ ಪ್ರಶ್ನೆ / ಆಸಕ್ತಿಯ ಕ್ಷೇತ್ರ</label> 
+                        <textarea id="regMessage" name="message" rows="3" required placeholder="ಯಾವ ತರಗತಿಯಲ್ಲಿ (ಮೇಕಪ್, ನೃತ್ಯ, ಚಂಡೆ) ಆಸಕ್ತಿ ಇದೆ ಎಂದು ತಿಳಿಸಿ..." class="mt-1 block w-full px-4 py-2.5 border border-gray-300 rounded-xl shadow-inner focus:ring-4 focus:ring-opacity-30 focus:ring-[#AA2C2C] focus:border-[#AA2C2C] transition duration-200 ease-in-out resize-none"></textarea>
+                    </div>
+                    <button type="submit" id="regSubmitButton" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-xl text-base font-semibold text-white yaksha-crimson yaksha-crimson-hover focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-[#AA2C2C] transition duration-200 ease-in-out transform hover:scale-[1.01]">&nbsp;ನೋಂದಣಿ ಫಾರ್ಮ್ ಸಲ್ಲಿಸಿ&nbsp;</button>
+                    <div id="regMessageStatus" class="text-center text-sm font-medium mt-3"><br></div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_BUCKET.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getFirestore();
+
+        // Anonymous login
+        signInAnonymously(auth).catch(console.error);
+
+        // Registration form submission
+        const form = document.getElementById('registrationForm');
+        const regStatus = document.getElementById('regMessageStatus');
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const name = form.regName.value.trim();
+            const email = form.regEmail.value.trim();
+            const phone = form.regPhone.value.trim();
+            const message = form.regMessage.value.trim();
+            try {
+                await addDoc(collection(db, "yaksha_registrations"), { name, email, phone, message, timestamp: new Date() });
+                regStatus.textContent = "ನೋಂದಣಿ ಯಶಸ್ವಿಯಾಗಿದೆ! ಧನ್ಯವಾದಗಳು.";
+                form.reset();
+            } catch (err) {
+                regStatus.textContent = "ದೋಷ! ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.";
+                console.error(err);
+            }
+        });
+
+        // Events rendering
+        const eventsList = document.getElementById('eventsList');
+        const q = query(collection(db, "yaksha_events"), orderBy("timestamp", "desc"));
+        onSnapshot(q, snapshot => {
+            eventsList.innerHTML = '';
+            if (snapshot.empty) {
+                eventsList.innerHTML = '<li class="p-4 bg-yaksha-light-gold rounded-xl shadow-inner text-gray-700 text-center">ಇದೇನೋ ಕಾರ್ಯಕ್ರಮಗಳು ಲಭ್ಯವಿಲ್ಲ</li>';
+            } else {
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.className = "p-4 bg-yaksha-light-gold rounded-xl shadow-inner text-gray-700 text-center";
+                    li.textContent = `${data.title || 'ಕಾರ್ಯಕ್ರಮ'}: ${data.date || 'ದಿನಾಂಕ ಲಭ್ಯವಿಲ್ಲ'}`;
+                    eventsList.appendChild(li);
+                });
+            }
+        });
+
+        // Test: simulate adding a new event
+        document.getElementById('simulateEventBtn').addEventListener('click', async () => {
+            try {
+                await addDoc(collection(db, "yaksha_events"), {
+                    title: "ಪ್ರದರ್ಶನ ದಿನಾಚರಣೆ",
+                    date: new Date().toLocaleDateString(),
+                    timestamp: new Date()
+                });
+            } catch(e){ console.error(e);}
+        });
+    </script>
+</body>
+
+</html>
