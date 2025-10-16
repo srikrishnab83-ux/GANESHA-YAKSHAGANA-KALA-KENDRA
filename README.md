@@ -112,8 +112,20 @@
 
         // 1. Mandatory Global Variable initialization
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        
+        // --- FIX: Provide a dummy config structure for external environments (like GitHub) ---
+        // This prevents the "projectId not provided" error when running outside the Canvas environment.
+        const defaultFirebaseConfig = {
+            apiKey: "DUMMY_API_KEY", 
+            authDomain: "dummy-domain.firebaseapp.com",
+            projectId: "dummy-project-id", 
+            storageBucket: "dummy-bucket.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:a1b2c3d4e5f6g7h8i9j0",
+        };
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : defaultFirebaseConfig;
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // --- END FIX ---
 
         /**
          * Adjusted the collection path to ensure it has an odd number of segments (5 segments).
@@ -122,6 +134,20 @@
 
         // Initialize and Authenticate
         const initializeFirebase = async () => {
+            const loadingMessage = document.getElementById('loading-message');
+            
+            // Check if we are using the dummy configuration
+            if (firebaseConfig.projectId === "dummy-project-id") {
+                loadingMessage.innerHTML = `<p class="text-red-500">ಗಮನಿಸಿ: ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ (ಬಾಹ್ಯ ಪರಿಸರದಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದೆ). ಕ್ರಿಯಾತ್ಮಕ ವಿಭಾಗಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ.</p>`;
+                renderGuru(guruData); // Render fallback guru data
+                renderEvents([]); // Render empty lists
+                renderStudents([]);
+                renderGallery([]);
+                renderDonationTotal(0);
+                document.getElementById('qr-code-img').src = "https://placehold.co/200x200/4c4d51/FFFFFF?text=QR+Code+Unavailable";
+                return;
+            }
+
             try {
                 // setLogLevel('Debug'); // Enable for debugging
                 const app = initializeApp(firebaseConfig);
@@ -134,15 +160,12 @@
                         unsubscribe();
                         if (user) {
                             userId = user.uid;
-                            console.log("Firebase Auth State Changed: User logged in:", userId);
                             resolve();
                         } else if (initialAuthToken) {
-                            console.log("Signing in with custom token...");
                             await signInWithCustomToken(auth, initialAuthToken);
                             userId = auth.currentUser.uid;
                             resolve();
                         } else {
-                            console.log("Signing in anonymously...");
                             await signInAnonymously(auth);
                             userId = auth.currentUser.uid;
                             resolve();
@@ -163,7 +186,7 @@
 
             } catch (error) {
                 console.error("Firebase Initialization or Authentication Failed:", error);
-                document.getElementById('loading-message').innerHTML = `<p class="text-red-500">ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಯಿತು: ${error.message}</p>`;
+                loadingMessage.innerHTML = `<p class="text-red-500">ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಯಿತು: ${error.message}</p>`;
             }
         };
 
@@ -322,6 +345,15 @@
 
         // Admission Form Submission
         window.handleAdmission = async () => {
+            // Check if DB is initialized (will be null/undefined if running outside Canvas)
+            if (!db) {
+                const status = document.getElementById('admission-status');
+                status.textContent = "ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕವಿಲ್ಲ. ಪ್ರವೇಶಾತಿ ಅರ್ಜಿಗಳನ್ನು ಉಳಿಸಲಾಗುವುದಿಲ್ಲ.";
+                status.classList.remove('text-green-500');
+                status.classList.add('text-red-500');
+                return;
+            }
+
             const form = document.getElementById('admission-form');
             const status = document.getElementById('admission-status');
             const data = {
@@ -383,8 +415,24 @@
 
         // --- Admin Panel Functions ---
 
+        const checkDbAccess = () => {
+             if (!db) {
+                console.error("DB Access Required: Cannot perform admin operations without Firebase connection.");
+                // NOTE: Using console error instead of alert/modal for non-critical admin operations
+                return false;
+            }
+            return true;
+        }
+
         window.openAdminLogin = () => {
+             if (!checkDbAccess()) {
+                document.getElementById('admin-login-error').textContent = "ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕವಿಲ್ಲ. ಅಡ್ಮಿನ್ ಕಾರ್ಯಗಳು ನಿಷ್ಕ್ರಿಯಗೊಂಡಿವೆ.";
+                document.getElementById('admin-login-error').classList.remove('hidden');
+                setTimeout(() => document.getElementById('admin-login-error').classList.add('hidden'), 5000);
+                return;
+            }
             document.getElementById('admin-login-modal').style.display = 'flex';
+            document.getElementById('admin-password').value = ''; // Clear password on open
         };
 
         window.closeAdminLogin = () => {
@@ -394,6 +442,9 @@
         window.handleAdminLogin = () => {
             const password = document.getElementById('admin-password').value;
             const errorElement = document.getElementById('admin-login-error');
+            
+            if (!checkDbAccess()) return;
+
             // Simplified admin login for demonstration purposes
             // The password is 'admin123'
             if (password === 'admin123') { 
@@ -423,6 +474,8 @@
 
         // Load all data for admin viewing/editing
         const loadAdminData = async () => {
+            if (!checkDbAccess()) return;
+            
             document.getElementById('admin-events').innerHTML = '<div class="loader mx-auto"></div>';
             document.getElementById('admin-gallery').innerHTML = '<div class="loader mx-auto"></div>';
             document.getElementById('admin-students').innerHTML = '<div class="loader mx-auto"></div>';
@@ -456,6 +509,7 @@
                 const guruDoc = await getDoc(doc(db, getCollectionPath('guru'), 'details'));
                 if (guruDoc.exists()) {
                     document.getElementById('admin-guru-name').value = guruDoc.data().name || '';
+                    guruData.photoUrl = guruDoc.data().photoUrl; // Update local guruData photoUrl
                 } else {
                     // Set a sensible default if the doc doesn't exist
                     document.getElementById('admin-guru-name').value = guruData.name; 
@@ -516,9 +570,9 @@
 
         // --- Admin CRUD Handlers for Deletion and Addition ---
         
-        // 1. EVENT HANDLERS (Omitted for brevity, assumed unchanged)
-
+        // 1. EVENT HANDLERS
         window.addEvent = async () => {
+            if (!checkDbAccess()) return;
             const date = document.getElementById('new-event-date').value;
             const time = document.getElementById('new-event-time').value;
             const location = document.getElementById('new-event-location').value;
@@ -534,6 +588,7 @@
         };
         
         window.removeEvent = async (id) => {
+            if (!checkDbAccess()) return;
             console.warn("ADMIN ACTION: Deleting Event ID:", id);
             try {
                 await deleteDoc(doc(db, getCollectionPath('events'), id));
@@ -543,9 +598,9 @@
             }
         };
 
-        // 2. STUDENT HANDLERS (Omitted for brevity, assumed unchanged)
-        
+        // 2. STUDENT HANDLERS
         window.addStudent = async () => {
+            if (!checkDbAccess()) return;
             const name = document.getElementById('new-student-name').value;
             const description = document.getElementById('new-student-description').value;
             const photoFile = document.getElementById('new-student-photo').files[0];
@@ -565,6 +620,7 @@
         };
 
         window.removeStudent = async (id) => {
+            if (!checkDbAccess()) return;
             console.warn("ADMIN ACTION: Deleting Student ID:", id);
             try {
                 await deleteDoc(doc(db, getCollectionPath('students'), id));
@@ -574,9 +630,9 @@
             }
         };
 
-        // 3. GALLERY HANDLERS (Omitted for brevity, assumed unchanged)
-        
+        // 3. GALLERY HANDLERS
         window.addGalleryItem = async () => {
+            if (!checkDbAccess()) return;
             const fileInput = document.getElementById('new-gallery-file');
             const file = fileInput.files[0];
             if (!file) {
@@ -593,6 +649,7 @@
         };
         
         window.removeGalleryItem = async (id) => {
+            if (!checkDbAccess()) return;
             console.warn("ADMIN ACTION: Deleting Gallery Item ID:", id);
             try {
                 await deleteDoc(doc(db, getCollectionPath('gallery'), id));
@@ -602,9 +659,9 @@
             }
         };
 
-        // 4. DONATION HANDLERS (Omitted for brevity, assumed unchanged)
-        
+        // 4. DONATION HANDLERS
         window.updateDonationTotal = async () => {
+            if (!checkDbAccess()) return;
             const newTotal = parseInt(document.getElementById('admin-donation-total').value);
             if (isNaN(newTotal) || newTotal < 0) {
                 console.error("Invalid donation amount entered.");
@@ -616,6 +673,7 @@
         };
 
         window.updateQrCode = async () => {
+            if (!checkDbAccess()) return;
             const fileInput = document.getElementById('admin-qr-code-file');
             const file = fileInput.files[0];
             if (!file) {
@@ -631,6 +689,7 @@
 
         // 5. GURU HANDLERS (NEW)
         window.updateGuruDetails = async () => {
+            if (!checkDbAccess()) return;
             const name = document.getElementById('admin-guru-name').value.trim();
             const fileInput = document.getElementById('admin-guru-photo-file');
             const file = fileInput.files[0];
@@ -667,11 +726,13 @@
         };
 
         window.removeGuruPhoto = async () => {
+            if (!checkDbAccess()) return;
             // Use updateDoc to explicitly remove the 'photoUrl' field
             try {
-                await updateDoc(doc(db, getCollectionPath('guru'), 'details'), { 
+                // Ensure the document exists or create it if it doesn't before trying to update/delete field
+                await setDoc(doc(db, getCollectionPath('guru'), 'details'), { 
                     photoUrl: deleteField()
-                });
+                }, { merge: true });
                 console.log("Guru photo removed successfully.");
                 loadAdminData(); // Refresh admin status
             } catch (error) {
@@ -844,7 +905,7 @@
         </svg>
     </a>
     
-    <!-- Admin Login Modal (PASSWORD HINT REMOVED) -->
+    <!-- Admin Login Modal -->
     <div id="admin-login-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
             <h3 class="text-2xl font-bold mb-4 text-purple-700">ಆಡಳಿತ ಲಾಗಿನ್</h3>
@@ -908,7 +969,7 @@
                     <div id="admin-students" class="border rounded max-h-60 overflow-y-auto bg-white"></div>
                 </div>
 
-                <!-- 3. ಗುರುಗಳ ನಿರ್ವಹಣೆ (Guru Management) - NEW SECTION -->
+                <!-- 3. ಗುರುಗಳ ನಿರ್ವಹಣೆ (Guru Management) -->
                 <div class="yaksha-card p-4 bg-gray-50 border-t-4 border-orange-500">
                     <h3 class="text-xl font-semibold mb-3 text-orange-700">ಗುರುಗಳ ವಿವರಗಳ ನಿರ್ವಹಣೆ</h3>
                     <div class="space-y-3 mb-4">
@@ -969,4 +1030,3 @@
     </div>
 </body>
 </html>
-
