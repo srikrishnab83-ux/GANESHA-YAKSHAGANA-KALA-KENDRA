@@ -97,12 +97,18 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, orderBy, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, orderBy, where, getDocs, serverTimestamp, deleteField } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global Firebase variables setup
         let db, auth;
         let userId = 'anonymous'; // Will be updated after auth
+        
+        // Default Guru Data (used as a fallback and to hold current state)
+        let guruData = { 
+            name: "ಶ್ರೀ ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು", 
+            photoUrl: 'https://placehold.co/150x150/8b5cf6/FFFFFF?text=ಗುರು+ಭಾವಚಿತ್ರ' 
+        }; 
 
         // 1. Mandatory Global Variable initialization
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -203,7 +209,38 @@
                 console.log("QR Code updated.");
             });
 
+            // 6. Guru Listener (Single Document)
+            onSnapshot(doc(db, getCollectionPath('guru'), 'details'), (docSnapshot) => {
+                if (docSnapshot.exists()) {
+                    guruData = { 
+                        name: docSnapshot.data().name || "ಗುರುಗಳ ಹೆಸರು ಲಭ್ಯವಿಲ್ಲ", 
+                        photoUrl: docSnapshot.data().photoUrl || 'https://placehold.co/150x150/8b5cf6/FFFFFF?text=ಗುರು+ಭಾವಚಿತ್ರ' 
+                    };
+                }
+                renderGuru(guruData);
+                console.log("Guru data updated.");
+            });
+
             document.getElementById('loading-message').style.display = 'none';
+        };
+
+        // Helper to render the Guru section
+        const renderGuru = (guru) => {
+            const container = document.getElementById('guru-container');
+            const defaultGuruName = "ಶ್ರೀ ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು"; // Static fallback name
+            
+            container.innerHTML = `
+                <!-- Photo -->
+                <img id="guru-photo" src="${guru.photoUrl || 'https://placehold.co/150x150/8b5cf6/FFFFFF?text=ಗುರು+ಭಾವಚಿತ್ರ'}" 
+                     alt="${guru.name || defaultGuruName} Photo" 
+                     class="w-32 h-32 rounded-full object-cover border-4 border-yellow-500 shadow-md">
+                <div>
+                    <h3 id="guru-name-display" class="text-2xl font-bold text-purple-900">${guru.name || defaultGuruName}</h3>
+                    <p class="mt-2 text-gray-700 leading-relaxed">
+                        ಯಕ್ಷಗಾನ ಕಲೆಗೆ ತಮ್ಮ ಜೀವನವನ್ನೇ ಮುಡಿಪಾಗಿಟ್ಟಿರುವ ಹಿರಿಯ ಮತ್ತು ಅನುಭವಿ ಕಲಾವಿದರು ಹಾಗೂ ಗುರುವಾದ **${guru.name || defaultGuruName}** ಅವರ ನೇತೃತ್ವದಲ್ಲಿ ತರಗತಿಗಳು ನಡೆಯುತ್ತವೆ. ತೆಂಕು ತಿಟ್ಟಿನ ಸೂಕ್ಷ್ಮತೆ, ರಂಗದ ಪರಿಪೂರ್ಣತೆ ಮತ್ತು ಸಾಂಪ್ರದಾಯಿಕ ಶೈಲಿಯ ಜ್ಞಾನವನ್ನು ಅಳವಡಿಸಿರುವ ಇವರು, ಕಲಿಯುವ ಆಸಕ್ತಿ ಇರುವ ಎಲ್ಲರಿಗೂ ತಮ್ಮ ಅಮೂಲ್ಯ ಜ್ಞಾನವನ್ನು ಧಾರೆ ಎರೆಯುತ್ತಿದ್ದಾರೆ.
+                    </p>
+                </div>
+            `;
         };
 
         // Helper to render events
@@ -358,6 +395,7 @@
             const password = document.getElementById('admin-password').value;
             const errorElement = document.getElementById('admin-login-error');
             // Simplified admin login for demonstration purposes
+            // The password is 'admin123'
             if (password === 'admin123') { 
                 errorElement.textContent = '';
                 document.getElementById('admin-login-modal').style.display = 'none';
@@ -377,12 +415,8 @@
         
         // LOGOUT: Handles admin logout logic to close the panel
         window.handleLogout = () => {
-            // In a full application, you would implement Firebase signOut here:
-            // auth.signOut().then(() => { ... });
-            
             // For this sandbox environment, we simply close the admin panel modal.
             window.closeAdminPanel();
-            
             console.log("Admin successfully logged out, returning to main page.");
         };
 
@@ -393,6 +427,8 @@
             document.getElementById('admin-gallery').innerHTML = '<div class="loader mx-auto"></div>';
             document.getElementById('admin-students').innerHTML = '<div class="loader mx-auto"></div>';
             document.getElementById('admin-admissions').innerHTML = '<div class="loader mx-auto"></div>';
+            document.getElementById('admin-guru-photo-status').textContent = 'ಸ್ಥಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಲಾಗುತ್ತಿದೆ...';
+
 
             try {
                 // Fetch Events (for removal)
@@ -413,14 +449,25 @@
 
                 // Fetch Current Donation Total
                 const totalDoc = await getDoc(doc(db, getCollectionPath('donations'), 'total'));
-                const currentTotal = totalDoc.exists ? totalDoc.data().amount : 0;
+                const currentTotal = totalDoc.exists() ? totalDoc.data().amount : 0;
                 document.getElementById('admin-donation-total').value = currentTotal;
+                
+                // Fetch Guru Details (for editing)
+                const guruDoc = await getDoc(doc(db, getCollectionPath('guru'), 'details'));
+                if (guruDoc.exists()) {
+                    document.getElementById('admin-guru-name').value = guruDoc.data().name || '';
+                } else {
+                    // Set a sensible default if the doc doesn't exist
+                    document.getElementById('admin-guru-name').value = guruData.name; 
+                }
+                const photoStatus = guruDoc.exists() && guruDoc.data().photoUrl ? 'ಚಿತ್ರ ಲಭ್ಯವಿದೆ.' : 'ಚಿತ್ರ ಲಭ್ಯವಿಲ್ಲ.';
+                document.getElementById('admin-guru-photo-status').textContent = photoStatus;
+
 
             } catch (error) {
                 console.error("Error loading admin data:", error);
-                // NOTE: Using alert here as a fallback for error display. A production app should use a custom modal.
-                // alert("ಆಡಳಿತ ಡೇಟಾ ಲೋಡ್ ಮಾಡುವಾಗ ದೋಷ. ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ."); // Removed alert as per instructions
-                console.error("ADMIN ERROR: Failed to load admin data.");
+                // NOTE: Using console error instead of alert
+                console.error("ADMIN ERROR: Failed to load admin data. Check console for details.");
             }
         };
 
@@ -469,7 +516,8 @@
 
         // --- Admin CRUD Handlers for Deletion and Addition ---
         
-        // 1. EVENT HANDLERS
+        // 1. EVENT HANDLERS (Omitted for brevity, assumed unchanged)
+
         window.addEvent = async () => {
             const date = document.getElementById('new-event-date').value;
             const time = document.getElementById('new-event-time').value;
@@ -477,12 +525,12 @@
             const prasanga = document.getElementById('new-event-prasanga').value;
             if (!date || !time || !prasanga) {
                  console.error("Missing required event fields.");
-                 return; // Silently fail in sandbox for non-alert behavior
+                 return;
             }
 
             await addDoc(collection(db, getCollectionPath('events')), { date, time, location, prasanga });
             document.getElementById('admin-event-form').reset();
-            loadAdminData(); // Refresh list
+            loadAdminData();
         };
         
         window.removeEvent = async (id) => {
@@ -492,22 +540,21 @@
                 loadAdminData();
             } catch (error) {
                 console.error("Error removing event:", error);
-                // alert("ಕಾರ್ಯಕ್ರಮ ತೆಗೆದುಹಾಕುವಲ್ಲಿ ದೋಷ."); // Removed alert
             }
         };
+
+        // 2. STUDENT HANDLERS (Omitted for brevity, assumed unchanged)
         
-        // 2. STUDENT HANDLERS
         window.addStudent = async () => {
             const name = document.getElementById('new-student-name').value;
             const description = document.getElementById('new-student-description').value;
             const photoFile = document.getElementById('new-student-photo').files[0];
             if (!name || !description) {
                 console.error("Missing required student fields.");
-                return; // Silently fail
+                return;
             }
             
             let photoUrl = '';
-            // NOTE: In a real app, upload to Storage, not Firestore directly (due to size limits)
             if (photoFile) {
                 photoUrl = await fileToBase64(photoFile);
             }
@@ -524,20 +571,19 @@
                 loadAdminData();
             } catch (error) {
                 console.error("Error removing student:", error);
-                // alert("ವಿದ್ಯಾರ್ಥಿ ವಿವರ ತೆಗೆದುಹಾಕುವಲ್ಲಿ ದೋಷ."); // Removed alert
             }
         };
 
-        // 3. GALLERY HANDLERS
+        // 3. GALLERY HANDLERS (Omitted for brevity, assumed unchanged)
+        
         window.addGalleryItem = async () => {
             const fileInput = document.getElementById('new-gallery-file');
             const file = fileInput.files[0];
             if (!file) {
                  console.error("No gallery file selected.");
-                 return; // Silently fail
+                 return;
             }
 
-            // NOTE: In a real app, upload to Storage, not Firestore directly (due to size/cost limits)
             const url = await fileToBase64(file);
             const type = file.type;
 
@@ -553,20 +599,19 @@
                 loadAdminData();
             } catch (error) {
                 console.error("Error removing gallery item:", error);
-                // alert("ಗ್ಯಾಲರಿ ಐಟಂ ತೆಗೆದುಹಾಕುವಲ್ಲಿ ದೋಷ."); // Removed alert
             }
         };
 
-        // 4. DONATION HANDLERS
+        // 4. DONATION HANDLERS (Omitted for brevity, assumed unchanged)
+        
         window.updateDonationTotal = async () => {
             const newTotal = parseInt(document.getElementById('admin-donation-total').value);
             if (isNaN(newTotal) || newTotal < 0) {
                 console.error("Invalid donation amount entered.");
-                return; // Silently fail
+                return;
             }
 
             await setDoc(doc(db, getCollectionPath('donations'), 'total'), { amount: newTotal }, { merge: true });
-            // alert("ದೇಣಿಗೆ ಮೊತ್ತವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ."); // Removed alert
             console.log("Donation total updated successfully.");
         };
 
@@ -575,14 +620,63 @@
             const file = fileInput.files[0];
             if (!file) {
                 console.error("No QR code file selected.");
-                return; // Silently fail
+                return;
             }
             
             const qrUrl = await fileToBase64(file);
             await setDoc(doc(db, getCollectionPath('donations'), 'qr'), { url: qrUrl }, { merge: true });
-            // alert("QR ಕೋಡ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ."); // Removed alert
             console.log("QR Code updated successfully.");
             fileInput.value = '';
+        };
+
+        // 5. GURU HANDLERS (NEW)
+        window.updateGuruDetails = async () => {
+            const name = document.getElementById('admin-guru-name').value.trim();
+            const fileInput = document.getElementById('admin-guru-photo-file');
+            const file = fileInput.files[0];
+            
+            if (!name && !file) {
+                 console.error("Guru: Either name or a new photo must be provided for update.");
+                 return;
+            }
+
+            let photoUrl = guruData.photoUrl; // Keep existing photo URL by default
+            
+            // 1. Handle new file upload
+            if (file) {
+                photoUrl = await fileToBase64(file);
+            }
+            
+            // 2. Construct the update payload
+            const updatePayload = {};
+            if (name) {
+                updatePayload.name = name;
+            } else {
+                 // Use the existing name if a name isn't provided but a photo is
+                 updatePayload.name = guruData.name; 
+            }
+            
+            // Only update photoUrl if it's changing (either a new file or keeping existing)
+            updatePayload.photoUrl = photoUrl;
+
+            // Use setDoc with merge: true to avoid overwriting other fields if they existed
+            await setDoc(doc(db, getCollectionPath('guru'), 'details'), updatePayload, { merge: true });
+            console.log("Guru details updated successfully.");
+            fileInput.value = ''; // Clear file input after use
+            loadAdminData(); // Refresh admin status
+        };
+
+        window.removeGuruPhoto = async () => {
+            // Use updateDoc to explicitly remove the 'photoUrl' field
+            try {
+                await updateDoc(doc(db, getCollectionPath('guru'), 'details'), { 
+                    photoUrl: deleteField()
+                });
+                console.log("Guru photo removed successfully.");
+                loadAdminData(); // Refresh admin status
+            } catch (error) {
+                console.error("Error removing guru photo. Ensure the document exists:", error);
+            }
         };
 
         // Utility to convert file to Base64 (needed for direct Firestore storage)
@@ -624,18 +718,12 @@
             </div>
         </section>
 
-        <!-- 2. ನಮ್ಮ ಗುರುಗಳು (Our Guru) -->
+        <!-- 2. ನಮ್ಮ ಗುರುಗಳು (Our Guru) - DYNAMICALLY RENDERED -->
         <section id="guru" class="mb-16">
             <h2 class="section-header">೨. ನಮ್ಮ ಗುರುಗಳು</h2>
-            <div class="yaksha-card bg-white p-6 sm:p-8 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
-                <!-- Placeholder Image -->
-                <img src="https://placehold.co/150x150/8b5cf6/FFFFFF?text=ಗುರು+ಭಾವಚಿತ್ರ" alt="Guru Photo" class="w-32 h-32 rounded-full object-cover border-4 border-yellow-500 shadow-md">
-                <div>
-                    <h3 class="text-2xl font-bold text-purple-900">ಶ್ರೀ ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು</h3>
-                    <p class="mt-2 text-gray-700 leading-relaxed">
-                        ಯಕ್ಷಗಾನ ಕಲೆಗೆ ತಮ್ಮ ಜೀವನವನ್ನೇ ಮುಡಿಪಾಗಿಟ್ಟಿರುವ ಹಿರಿಯ ಮತ್ತು ಅನುಭವಿ ಕಲಾವಿದರು ಹಾಗೂ ಗುರುವಾದ ಶ್ರೀ ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ ಅವರ ನೇತೃತ್ವದಲ್ಲಿ ತರಗತಿಗಳು ನಡೆಯುತ್ತವೆ. ತೆಂಕು ತಿಟ್ಟಿನ ಸೂಕ್ಷ್ಮತೆ, ರಂಗದ ಪರಿಪೂರ್ಣತೆ ಮತ್ತು ಸಾಂಪ್ರದಾಯಿಕ ಶೈಲಿಯ ಜ್ಞಾನವನ್ನು ಅಳವಡಿಸಿರುವ ಇವರು, ಕಲಿಯುವ ಆಸಕ್ತಿ ಇರುವ ಎಲ್ಲರಿಗೂ ತಮ್ಮ ಅಮೂಲ್ಯ ಜ್ಞಾನವನ್ನು ಧಾರೆ ಎರೆಯುತ್ತಿದ್ದಾರೆ.
-                    </p>
-                </div>
+            <div id="guru-container" class="yaksha-card bg-white p-6 sm:p-8 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
+                <!-- Dynamic content will be injected here by renderGuru() -->
+                <p class="text-center text-gray-500 italic p-4 col-span-full">ಗುರುಗಳ ಮಾಹಿತಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ...</p>
             </div>
         </section>
 
@@ -756,12 +844,14 @@
         </svg>
     </a>
     
-    <!-- Admin Login Modal -->
+    <!-- Admin Login Modal (PASSWORD HINT REMOVED) -->
     <div id="admin-login-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-center">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm">
             <h3 class="text-2xl font-bold mb-4 text-purple-700">ಆಡಳಿತ ಲಾಗಿನ್</h3>
             <p class="text-sm text-gray-600 mb-4">ಮುಂದುವರಿಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ.</p>
-            <input type="password" id="admin-password" placeholder="ಪಾಸ್‌ವರ್ಡ್: admin123" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 mb-4">
+            
+            <input type="password" id="admin-password" placeholder="ಪಾಸ್‌ವರ್ಡ್" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 mb-4">
+            
             <p id="admin-login-error" class="text-red-500 text-sm mb-4 hidden"></p>
             <div class="flex justify-end space-x-3">
                 <button onclick="closeAdminLogin()" class="py-2 px-4 bg-gray-300 rounded-lg hover:bg-gray-400">ರದ್ದು</button>
@@ -818,7 +908,23 @@
                     <div id="admin-students" class="border rounded max-h-60 overflow-y-auto bg-white"></div>
                 </div>
 
-                <!-- 3. ಗ್ಯಾಲರಿ ನಿರ್ವಹಣೆ (Gallery Management) -->
+                <!-- 3. ಗುರುಗಳ ನಿರ್ವಹಣೆ (Guru Management) - NEW SECTION -->
+                <div class="yaksha-card p-4 bg-gray-50 border-t-4 border-orange-500">
+                    <h3 class="text-xl font-semibold mb-3 text-orange-700">ಗುರುಗಳ ವಿವರಗಳ ನಿರ್ವಹಣೆ</h3>
+                    <div class="space-y-3 mb-4">
+                        <label class="block text-sm font-medium text-gray-700">ಗುರುಗಳ ಹೆಸರು</label>
+                        <input type="text" id="admin-guru-name" placeholder="ಗುರುಗಳ ಹೆಸರು" class="w-full p-2 border rounded" required>
+                        
+                        <label class="block text-sm font-medium text-gray-700">ಭಾವಚಿತ್ರ (ಹೊಸತು ಸೇರಿಸಲು)</label>
+                        <input type="file" id="admin-guru-photo-file" accept="image/*" class="w-full text-sm">
+                        <p id="admin-guru-photo-status" class="text-xs text-gray-600 italic mt-1">ಚಿತ್ರ ಲಭ್ಯವಿಲ್ಲ.</p>
+                        
+                        <button type="button" onclick="updateGuruDetails()" class="w-full py-2 bg-orange-600 text-white rounded hover:bg-orange-700">ವಿವರಗಳನ್ನು ನವೀಕರಿಸಿ</button>
+                        <button type="button" onclick="removeGuruPhoto()" class="w-full py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm">ಭಾವಚಿತ್ರ ತೆಗೆದುಹಾಕು</button>
+                    </div>
+                </div>
+                
+                <!-- 4. ಗ್ಯಾಲರಿ ನಿರ್ವಹಣೆ (Gallery Management) -->
                 <div class="yaksha-card p-4 bg-gray-50 border-t-4 border-yellow-500">
                     <h3 class="text-xl font-semibold mb-3 text-yellow-700">ಗ್ಯಾಲರಿ ನಿರ್ವಹಣೆ</h3>
                     <p class="text-sm text-gray-500 mb-2">ಚಿತ್ರ/ವೀಡಿಯೋ ಸೇರಿಸಲು</p>
@@ -827,8 +933,8 @@
                     <div id="admin-gallery" class="border rounded mt-4 h-40 overflow-y-auto bg-white"></div>
                 </div>
                 
-                <!-- 4. ದೇಣಿಗೆ ಮತ್ತು QR ಕೋಡ್ ನಿರ್ವಹಣೆ (Donation & QR Management) -->
-                <div class="yaksha-card p-4 bg-gray-50 border-t-4 border-red-500">
+                <!-- 5. ದೇಣಿಗೆ ಮತ್ತು QR ಕೋಡ್ ನಿರ್ವಹಣೆ (Donation & QR Management) -->
+                <div class="yaksha-card p-4 bg-gray-50 border-t-4 border-red-500 lg:col-span-1">
                     <h3 class="text-xl font-semibold mb-3 text-red-700">ದೇಣಿಗೆ ನಿರ್ವಹಣೆ</h3>
                     <div class="space-y-3 mb-4">
                         <label class="block text-sm font-medium text-gray-700">ಸಂಗ್ರಹವಾದ ಒಟ್ಟು ಮೊತ್ತ ನವೀಕರಿಸಿ</label>
@@ -842,8 +948,8 @@
                     </div>
                 </div>
                 
-                <!-- 5. ಪ್ರವೇಶಾತಿ ಅರ್ಜಿ ವೀಕ್ಷಣೆ (Admission Viewing) -->
-                <div class="lg:col-span-2 yaksha-card p-4 bg-gray-50 border-t-4 border-purple-500">
+                <!-- 6. ಪ್ರವೇಶಾತಿ ಅರ್ಜಿ ವೀಕ್ಷಣೆ (Admission Viewing) -->
+                <div class="yaksha-card p-4 bg-gray-50 border-t-4 border-purple-500 lg:col-span-1">
                     <h3 class="text-xl font-semibold mb-3 text-purple-700">ಬಂದಿರುವ ಪ್ರವೇಶಾತಿ ಅರ್ಜಿಗಳು</h3>
                     <div id="admin-admissions" class="border rounded max-h-60 overflow-y-auto bg-white">
                         <!-- Admissions will be loaded here -->
@@ -863,3 +969,4 @@
     </div>
 </body>
 </html>
+
