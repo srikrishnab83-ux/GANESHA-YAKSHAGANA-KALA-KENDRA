@@ -921,8 +921,8 @@
         </div>
     </div>
 
-    <!-- Admin Panel Modal -->
-    <div id="admin-panel-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 justify-center items-center overflow-y-auto py-10">
+    <!-- Admin Panel Modal - FIX APPLIED HERE: Removed 'items-center' and ensured 'flex' for proper top alignment and scrolling -->
+    <div id="admin-panel-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center overflow-y-auto py-10">
         <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-3xl relative">
             
             <!-- FIXED HEADER: Title and Close Button (Logout moved to bottom) -->
