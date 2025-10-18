@@ -110,22 +110,32 @@
             photoUrl: 'https://placehold.co/150x150/8b5cf6/FFFFFF?text=ಗುರು+ಭಾವಚಿತ್ರ' 
         }; 
 
+        // 🚨 CRITICAL: ವಾಟ್ಸಾಪ್ ನೋಟಿಫಿಕೇಶನ್ ಪಡೆಯಲು ಈ ಸಂಖ್ಯೆಯನ್ನು ನಿಮ್ಮ ನೈಜ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯೊಂದಿಗೆ ಬದಲಾಯಿಸಿ.
+        const ADMIN_WHATSAPP_NUMBER = '919148014768'; // <-- Configured WhatsApp number
+        
         // 1. Mandatory Global Variable initialization
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         
-        // --- FIX: Provide a dummy config structure for external environments (like GitHub) ---
-        // This prevents the "projectId not provided" error when running outside the Canvas environment.
-        const defaultFirebaseConfig = {
-            apiKey: "DUMMY_API_KEY", 
-            authDomain: "dummy-domain.firebaseapp.com",
-            projectId: "dummy-project-id", 
-            storageBucket: "dummy-bucket.appspot.com",
+        // --- 🛠️ ನಿಮ್ಮ ನಿಜವಾದ ಫೈರ್‌ಬೇಸ್ ಕಾನ್ಫಿಗರೇಶನ್ ಅನ್ನು ಇಲ್ಲಿ ಅಂಟಿಸಿ ---
+        // 🚨 ಈ ಕಾನ್ಫಿಗರೇಶನ್ ಅನ್ನು ಈಗ ಬಳಕೆದಾರರು ಒದಗಿಸಿದ ಮಾಹಿತಿಯೊಂದಿಗೆ ನವೀಕರಿಸಲಾಗಿದೆ.
+        const USER_PROVIDED_CONFIG = {
+            apiKey: "AIzaSyBxxxxxxx",
+            authDomain: "ganesha-yakshagana.firebaseapp.com",
+            projectId: "ganesha-yakshagana",
+            storageBucket: "ganesha-yakshagana.appspot.com",
             messagingSenderId: "123456789012",
             appId: "1:123456789012:web:a1b2c3d4e5f6g7h8i9j0",
         };
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : defaultFirebaseConfig;
+        
+        // Use the user's provided config as the external/default configuration
+        const externalFirebaseConfig = USER_PROVIDED_CONFIG; 
+        
+        // Check if running in the Canvas environment (where global config is provided)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : externalFirebaseConfig;
+        
+        // Authentication token is only available in the Canvas environment
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        // --- END FIX ---
+        // --- END OF FIREBASE CONFIG SECTION ---
 
         /**
          * Adjusted the collection path to ensure it has an odd number of segments (5 segments).
@@ -136,18 +146,8 @@
         const initializeFirebase = async () => {
             const loadingMessage = document.getElementById('loading-message');
             
-            // Check if we are using the dummy configuration
-            if (firebaseConfig.projectId === "dummy-project-id") {
-                loadingMessage.innerHTML = `<p class="text-red-500">ಗಮನಿಸಿ: ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ (ಬಾಹ್ಯ ಪರಿಸರದಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿದೆ). ಕ್ರಿಯಾತ್ಮಕ ವಿಭಾಗಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ.</p>`;
-                renderGuru(guruData); // Render fallback guru data
-                renderEvents([]); // Render empty lists
-                renderStudents([]);
-                renderGallery([]);
-                renderDonationTotal(0);
-                document.getElementById('qr-code-img').src = "https://placehold.co/200x200/4c4d51/FFFFFF?text=QR+Code+Unavailable";
-                return;
-            }
-
+            // --- NOTE: Since real configuration is provided, we attempt connection directly. ---
+            
             try {
                 // setLogLevel('Debug'); // Enable for debugging
                 const app = initializeApp(firebaseConfig);
@@ -186,7 +186,14 @@
 
             } catch (error) {
                 console.error("Firebase Initialization or Authentication Failed:", error);
-                loadingMessage.innerHTML = `<p class="text-red-500">ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಯಿತು: ${error.message}</p>`;
+                loadingMessage.innerHTML = `<p class="text-red-500 font-bold">ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಯಿತು. ದೋಷ: ನಿಮ್ಮ ಕಾನ್ಫಿಗರೇಶನ್ ಸರಿಯಾಗಿದೆಯೇ, ಮತ್ತು ಫೈರ್‌ಬೇಸ್ ನಿಯಮಗಳು ಸರಿಯಾಗಿದೆಯೇ ಎಂದು ಪರಿಶೀಲಿಸಿ.</p><p class="text-sm text-gray-600 mt-2">(${error.message})</p>`;
+                // Render fallback data on failure
+                renderGuru(guruData); 
+                renderEvents([]); 
+                renderStudents([]);
+                renderGallery([]);
+                renderDonationTotal(0);
+                document.getElementById('qr-code-img').src = "https://placehold.co/200x200/4c4d51/FFFFFF?text=QR+Code+Unavailable";
             }
         };
 
@@ -314,13 +321,13 @@
             const container = document.getElementById('gallery-container');
             container.innerHTML = '';
             if (items.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500 italic">ಯಾವುದೇ ಚಿತ್ರಗಳು/ವೀಡಿಯೋಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>';
+                container.innerHTML = '<p class="text-center text-gray-500 italic p-4 col-span-full">ಯಾವುದೇ ಚಿತ್ರಗಳು/ವೀಡಿಯೋಗಳು ಲಭ್ಯವಿಲ್ಲ.</p>';
                 return;
             }
             items.forEach(item => {
                 const isVideo = item.type && item.type.startsWith('video');
                 const thumbnailContent = isVideo 
-                    ? `<svg class="w-10 h-10 text-white absolute inset-0 m-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`
+                    ? `<svg class="w-10 h-10 text-white absolute inset-0 m-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 108 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`
                     : `<img src="${item.url}" alt="Gallery Image" class="w-full h-full object-cover">`;
 
                 container.innerHTML += `
@@ -343,9 +350,9 @@
 
         // --- Public Interaction Functions ---
 
-        // Admission Form Submission
+        // Admission Form Submission - MODIFIED to include WhatsApp Notification
         window.handleAdmission = async () => {
-            // Check if DB is initialized (will be null/undefined if running outside Canvas)
+            // Check if DB is initialized (will be null/undefined if running outside Canvas without real keys)
             if (!db) {
                 const status = document.getElementById('admission-status');
                 status.textContent = "ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕವಿಲ್ಲ. ಪ್ರವೇಶಾತಿ ಅರ್ಜಿಗಳನ್ನು ಉಳಿಸಲಾಗುವುದಿಲ್ಲ.";
@@ -356,6 +363,8 @@
 
             const form = document.getElementById('admission-form');
             const status = document.getElementById('admission-status');
+            
+            // 1. Prepare data and message
             const data = {
                 name: form.name.value,
                 address: form.address.value,
@@ -373,12 +382,40 @@
                 return;
             }
 
+            // 2. Save to Firestore
             try {
                 await addDoc(collection(db, getCollectionPath('admissions')), data);
-                status.textContent = "ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಶೀಘ್ರದಲ್ಲೇ ಸಂಪರ್ಕಿಸಲಾಗುವುದು!";
-                status.classList.remove('text-red-500');
-                status.classList.add('text-green-500');
+
+                // 3. Construct WhatsApp Message
+                const message = `*ಶ್ರೀ ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರಕ್ಕೆ ಹೊಸ ಪ್ರವೇಶಾತಿ ಅರ್ಜಿ ಬಂದಿದೆ!*
+                
+*ಹೆಸರು:* ${data.name}
+*ವಯಸ್ಸು:* ${data.age}
+*ದೂರವಾಣಿ:* ${data.phone}
+*ವಿಳಾಸ:* ${data.address || 'ಲಭ್ಯವಿಲ್ಲ'}
+*ಆಸಕ್ತಿ:* ${data.interest || 'ಲಭ್ಯವಿಲ್ಲ'}
+                
+ದಯವಿಟ್ಟು ತಕ್ಷಣ ಸಂಪರ್ಕಿಸಿ.`;
+                
+                // CRITICAL: Uses the configured ADMIN_WHATSAPP_NUMBER
+                const waLink = `https://wa.me/${ADMIN_WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+                // 4. Update UI to show success and prompt WhatsApp action
+                status.classList.remove('text-red-500', 'text-green-500');
+                status.innerHTML = `
+                    <p class="font-bold text-green-600 mb-3 text-center">✅ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!</p>
+                    <p class="text-gray-700 mb-4 text-center text-sm">ಈಗ *ಗುರುಗಳಿಗೆ ವಾಟ್ಸಾಪ್ ಮೂಲಕ ತಕ್ಷಣವೇ ತಿಳಿಸಲು* ಕೆಳಗಿನ ಬಟನ್ ಕ್ಲಿಕ್ ಮಾಡಿ. (ನಿಮ್ಮ ವಾಟ್ಸಾಪ್ ತೆರೆಯುತ್ತದೆ):</p>
+                    <a href="${waLink}" target="_blank" class="inline-flex items-center justify-center w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition duration-200 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.04 2C6.58 2 2.16 6.42 2.16 11.88c0 1.62.47 3.23 1.34 4.63L2 22l5.63-1.48c1.33.72 2.87 1.11 4.41 1.11 5.46 0 9.88-4.42 9.88-9.88S17.5 2 12.04 2zM12.04 20.17c-1.39 0-2.73-.39-3.92-1.15l-.28-.16L5.3 20.62l.74-2.76-.18-.29c-.76-1.2-1.15-2.58-1.15-3.99 0-4.48 3.63-8.12 8.12-8.12s8.12 3.64 8.12 8.12-3.64 8.12-8.12 8.12zm4.72-5.45c-.24-.12-.49-.12-.71-.24-.22-.12-.34-.12-.49-.12-.14 0-.39.12-.59.24-.21.12-.48.12-.71.12-.22 0-.46-.12-.66-.24-.19-.12-.51-.31-1.01-.79-.5-.51-.83-1.19-1.12-1.58-.28-.4-.01-.62-.12-.85s-.24-.49-.24-.71c0-.22-.05-.4-.05-.59s.12-.45.18-.61c.06-.15.22-.31.39-.45.16-.14.34-.33.47-.49.12-.17.18-.34.22-.51s0-.36-.06-.52c-.07-.16-.3-.38-.56-.67s-.61-.59-.85-.71c-.24-.12-.47-.12-.71-.12-.24 0-.47.0-.71.02-.24.02-.6.04-.92.36-.31.32-.83.82-.99.98-.16.16-.31.33-.45.49-.14.16-.24.34-.34.52s-.12.4-.07.61c.05.21.28.62.6 1.25.32.61.64 1.15 1.28 1.83s1.28 1.15 1.9 1.44c.61.29 1.26.46 1.87.49.59.03 1.05-.03 1.44-.24.39-.21.99-.41 1.12-.64.12-.24.12-.47.12-.66 0-.21-.06-.39-.18-.54z"/>
+                        </svg>
+                        ಗುರುಗಳಿಗೆ ವಾಟ್ಸಾಪ್ ಸಂದೇಶ ಕಳುಹಿಸಿ
+                    </a>
+                `;
+                
+                // 5. Clear the form after submission
                 form.reset();
+
             } catch (error) {
                 console.error("Error saving admission:", error);
                 status.textContent = "ಅರ್ಜಿ ಸಲ್ಲಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.";
@@ -416,9 +453,9 @@
         // --- Admin Panel Functions ---
 
         const checkDbAccess = () => {
+             // Check if db is initialized 
              if (!db) {
                 console.error("DB Access Required: Cannot perform admin operations without Firebase connection.");
-                // NOTE: Using console error instead of alert/modal for non-critical admin operations
                 return false;
             }
             return true;
@@ -426,7 +463,7 @@
 
         window.openAdminLogin = () => {
              if (!checkDbAccess()) {
-                document.getElementById('admin-login-error').textContent = "ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕವಿಲ್ಲ. ಅಡ್ಮಿನ್ ಕಾರ್ಯಗಳು ನಿಷ್ಕ್ರಿಯಗೊಂಡಿವೆ.";
+                document.getElementById('admin-login-error').textContent = "ಡೇಟಾಬೇಸ್ ಸಂಪರ್ಕವಿಲ್ಲ. ಅಡ್ಮಿನ್ ಕಾರ್ಯಗಳು ನಿಷ್ಕ್ರಿಯಗೊಂಡಿವೆ. (ಫೈರ್‌ಬೇಸ್ ಸಂಪರ್ಕ ವಿಫಲವಾಗಿದೆ).";
                 document.getElementById('admin-login-error').classList.remove('hidden');
                 setTimeout(() => document.getElementById('admin-login-error').classList.add('hidden'), 5000);
                 return;
@@ -772,7 +809,7 @@
         <!-- 1. ಪರಿಚಯ (Introduction) -->
         <section id="introduction" class="mb-16">
             <h2 class="section-header">೧. ಪರಿಚಯ</h2>
-            <div class="bg-white p-6 sm:p-8 rounded-lg yaksha-card">
+            <div class="yaksha-card bg-white p-6 sm:p-8 rounded-lg">
                 <p class="text-lg leading-relaxed text-gray-700">
                     ನಮ್ಮ ಶ್ರೀ ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ, ಮುಳ್ಳೇರಿಯಾಕ್ಕೆ ಆದರದ ಸ್ವಾಗತ. ಕೇರಳದ ಕಾಸರಗೋಡು ಜಿಲ್ಲೆಯ **ಮುಳ್ಳೇರಿಯಾನಲ್ಲಿ** ನೆಲೆಸಿರುವ ನಮ್ಮ ಕೇಂದ್ರವು, ಕರ್ನಾಟಕದ ಕರಾವಳಿ ಭಾಗದ ಶ್ರೇಷ್ಠ ಕಲಾಪ್ರಕಾರವಾದ **ಯಕ್ಷಗಾನದ 'ತೆಂಕು ತಿಟ್ಟು'** ಶೈಲಿಯನ್ನು ಮುಂದಿನ ಪೀಳಿಗೆಗೆ ದಾಟಿಸುವ ಪವಿತ್ರ ಕಾರ್ಯದಲ್ಲಿ ತೊಡಗಿದೆ. ಸುಮಾರು ವರ್ಷಗಳಿಂದ ಕಲೆಯ ಸೇವೆ ಮಾಡುತ್ತಿರುವ ನಾವು, ಕಲಾಭಿಮಾನಿಗಳಿಗೆ ಈ ಅದ್ಭುತ ರಂಗಭೂಮಿಯ ಆಳ ಮತ್ತು ಸೌಂದರ್ಯವನ್ನು ಪರಿಚಯಿಸುವ ಗುರಿ ಹೊಂದಿದ್ದೇವೆ. ನೃತ್ಯ, ಮಾತು, ಹಾಡು, ವೇಷಭೂಷಣ ಮತ್ತು ಅಭಿನಯಗಳ ಅದ್ಭುತ ಸಂಗಮವಾದ ಈ ಕಲೆಯನ್ನು ಅಧ್ಯಯನ ಮಾಡಲು ಮತ್ತು ಅಭ್ಯಾಸ ಮಾಡಲು ಇದೊಂದು ಸೂಕ್ತ ವೇದಿಕೆಯಾಗಿದೆ.
                 </p>
@@ -800,9 +837,10 @@
                     <p class="text-lg font-bold text-purple-700">ಸ್ಥಳ</p>
                     <p class="text-xl">**ಮುಳ್ಳೇರಿಯಾ**, ಕಾಸರಗೋಡು</p>
                 </div>
+                <!-- UPDATED SECTION: Added 'ಪ್ರತಿ ಭಾನುವಾರ' -->
                 <div class="border-l-4 border-purple-500 pl-4">
                     <p class="text-lg font-bold text-purple-700">ಸಮಯ</p>
-                    <p class="text-xl">ಮಧ್ಯಾಹ್ನ <span class="font-extrabold text-red-500">1:30 ರಿಂದ 3:45 ರವರೆಗೆ</span></p>
+                    <p class="text-xl">ಪ್ರತಿ ಭಾನುವಾರ ಮಧ್ಯಾಹ್ನ <span class="font-extrabold text-red-500">1:30 ರಿಂದ 3:45 ರವರೆಗೆ</span></p>
                 </div>
                 <div class="border-l-4 border-purple-500 pl-4">
                     <p class="text-lg font-bold text-purple-700">ತರಬೇತಿ ವಿಷಯಗಳು</p>
@@ -898,10 +936,11 @@
     </div>
 
     <!-- Fixed WhatsApp Button -->
-    <a href="https://wa.me/qr/JGB3XSEHKWFDD1" target="_blank" class="whatsapp-btn p-3 bg-green-500 text-white rounded-full shadow-xl hover:bg-green-600 transition duration-200">
-        <!-- WhatsApp Icon (Inline SVG) -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.924c0 1.399.366 2.76 1.057 3.965L.053 15.94a.5.5 0 0 0 .633.633l3.94-1.004a7.86 7.86 0 0 0 3.868.929c4.366 0 7.925-3.558 7.923-7.923s-3.558-7.925-7.923-7.924zM8 14.281c-1.467 0-2.924-.4-4.128-1.163l-.348-.204-3.492.893 1.053-3.322-.204-.347a6.888 6.888 0 0 1-1.16-4.13C1.65 4.314 4.814 1 8 1s6.35 3.314 6.35 7.424c0 4.11-3.164 7.424-6.35 7.424zm.44-5.226H6.608V7.531h1.832v1.524zm1.531 0h-1.832V7.531h1.832v1.524zM8 10.531H6.608V9.007h1.832v1.524zm1.531 0h-1.832V9.007h1.832v1.524z"/>
+    <a href="https://wa.me/qr/JGB3XSEHKWFDD1" target="_blank" 
+       class="whatsapp-btn w-14 h-14 flex items-center justify-center bg-green-500 text-white rounded-full shadow-2xl hover:bg-green-600 transition duration-200 transform hover:scale-105">
+        <!-- New, cleaner WhatsApp Icon (Inline SVG) -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12.04 2C6.58 2 2.16 6.42 2.16 11.88c0 1.62.47 3.23 1.34 4.63L2 22l5.63-1.48c1.33.72 2.87 1.11 4.41 1.11 5.46 0 9.88-4.42 9.88-9.88S17.5 2 12.04 2zM12.04 20.17c-1.39 0-2.73-.39-3.92-1.15l-.28-.16L5.3 20.62l.74-2.76-.18-.29c-.76-1.2-1.15-2.58-1.15-3.99 0-4.48 3.63-8.12 8.12-8.12s8.12 3.64 8.12 8.12-3.64 8.12-8.12 8.12zm4.72-5.45c-.24-.12-.49-.12-.71-.24-.22-.12-.34-.12-.49-.12-.14 0-.39.12-.59.24-.21.12-.48.12-.71.12-.22 0-.46-.12-.66-.24-.19-.12-.51-.31-1.01-.79-.5-.51-.83-1.19-1.12-1.58-.28-.4-.01-.62-.12-.85s-.24-.49-.24-.71c0-.22-.05-.4-.05-.59s.12-.45.18-.61c.06-.15.22-.31.39-.45.16-.14.34-.33.47-.49.12-.17.18-.34.22-.51s0-.36-.06-.52c-.07-.16-.3-.38-.56-.67s-.61-.59-.85-.71c-.24-.12-.47-.12-.71-.12-.24 0-.47.0-.71.02-.24.02-.6.04-.92.36-.31.32-.83.82-.99.98-.16.16-.31.33-.45.49-.14.16-.24.34-.34.52s-.12.4-.07.61c.05.21.28.62.6 1.25.32.61.64 1.15 1.28 1.83s1.28 1.15 1.9 1.44c.61.29 1.26.46 1.87.49.59.03 1.05-.03 1.44-.24.39-.21.99-.41 1.12-.64.12-.24.12-.47.12-.66 0-.21-.06-.39-.18-.54z"/>
         </svg>
     </a>
     
