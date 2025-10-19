@@ -27,13 +27,16 @@
 
         // ---------- YOUR REAL FIREBASE CONFIG (inserted) ----------
         const firebaseConfig = {
-apiKey: "AIzaSyDd8nNkIdX1JYqFErFLkU76JGZHOBtIYP8",
-    authDomain: "ganesha-yakshagana-mulleriya.firebaseapp.com",
-    projectId: "ganesha-yakshagana-mulleriya",
-    storageBucket: "ganesha-yakshagana-mulleriya.firebasestorage.app",
-    messagingSenderId: "265173933005",
-    appId: "1:265173933005:web:7f5d61f53293ea34180284",
-    measurementId: "G-96N96PV1QE"
+const firebaseConfig = {
+  apiKey: "AIzaSyDd8nNkIdX1JYqFErFLkU76JGZHOBtIYP8",
+  authDomain: "ganesha-yakshagana-mulleriya.firebaseapp.com",
+  projectId: "ganesha-yakshagana-mulleriya",
+  storageBucket: "ganesha-yakshagana-mulleriya.appspot.com",
+  messagingSenderId: "265173933005",
+  appId: "1:265173933005:web:7f5d61f53293ea34180284",
+  measurementId: "G-96N96PV1QE"
+};
+
         };
         // ------------------------------------------------------------
 
@@ -745,4 +748,5 @@ apiKey: "AIzaSyDd8nNkIdX1JYqFErFLkU76JGZHOBtIYP8",
 
 </body>
 </html>
+
 
