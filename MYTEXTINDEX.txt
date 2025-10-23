@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Updated Title -->
     <title>ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ, ಮುಳ್ಳೇರಿಯಾ - ಕಾಸರಗೋಡು</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,7 +16,35 @@
         .section-header {
             border-left: 5px solid #ff7a00; /* Yakshagana orange/gold accent */
         }
-        /* ಶೀರ್ಷಿಕೆ ಈಗ ಸಂಪೂರ್ಣವಾಗಿ ಕಾಣಿಸಿಕೊಳ್ಳಲು CSS ನಿರ್ಬಂಧಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗಿದೆ */
+        .file-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Custom styling to make the file input look like a button */
+        .custom-file-upload {
+            border: 2px solid #ff7a00;
+            display: inline-block;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #ff7a00;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .custom-file-upload:hover {
+            background-color: #ff7a00;
+            color: white;
+        }
+        .hidden-file-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
     </style>
     <!-- Configure Tailwind for custom colors (Yakshagana theme) -->
     <script>
@@ -43,11 +70,47 @@
         </div>
     </div>
 
-    <!-- Firebase Imports -->
+    <!-- ಕಸ್ಟಮ್ ಅಲರ್ಟ್/ಟೋಸ್ಟ್ ಬಾಕ್ಸ್ (Custom Alert/Toast Box) -->
+    <div id="custom-alert" class="fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 bg-green-600 opacity-0 z-50 pointer-events-none">
+        <!-- ಸಂದೇಶವು ಇಲ್ಲಿ ಪ್ರದರ್ಶನಗೊಳ್ಳುತ್ತದೆ -->
+    </div>
+
+    <!-- Global Alert Function (Must be outside module script for inline event handlers like onerror) -->
+    <script>
+        /**
+         * alert() ಬದಲಿಗೆ ಬಳಸಲು ಕಸ್ಟಮ್ ಟೋಸ್ಟ್ ಮೆಸೇಜ್ ಕಾರ್ಯ.
+         */
+        function alertMessage(message, isError = false) {
+            const alertBox = document.getElementById('custom-alert');
+            
+            console.log(`[ALERT] ${isError ? 'ERROR' : 'INFO'}: ${message}`); 
+            
+            alertBox.textContent = message;
+            
+            // ಬಣ್ಣ ಮತ್ತು ಶೈಲಿಗಳನ್ನು ನವೀಕರಿಸಿ
+            alertBox.classList.remove('bg-red-600', 'bg-green-600', 'opacity-0');
+            alertBox.classList.add('fixed', 'bottom-4', 'right-4', 'p-4', 'rounded-lg', 'shadow-xl', 'text-white', 'transition-opacity', 'duration-300', 'z-50', 'pointer-events-none');
+            alertBox.classList.add(isError ? 'bg-red-600' : 'bg-green-600');
+            
+            // ಗೋಚರತೆಯನ್ನು ಹೊಂದಿಸಿ
+            alertBox.style.opacity = 1;
+            
+            // 5 ಸೆಕೆಂಡುಗಳ ನಂತರ ಮರೆಮಾಡಿ
+            setTimeout(() => {
+                alertBox.style.opacity = 0;
+            }, 5000);
+        }
+        
+        // window ಗೆ ಅಟ್ಯಾಚ್ ಮಾಡುವ ಮೂಲಕ ಜಾಗತಿಕ ಲಭ್ಯತೆಯನ್ನು ಖಚಿತಪಡಿಸಿ
+        window.alertMessage = alertMessage;
+    </script>
+
+    <!-- Firebase Imports and Main Application Logic (Module Script) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot, collection, query, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // setLogLevel ಅನ್ನು ಫೈರ್‌ಸ್ಟೋರ್ ಇಂಪೋರ್ಟ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ
+        import { getFirestore, doc, setDoc, onSnapshot, collection, query, addDoc, deleteDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global Variables MUST BE USED
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-yakshagana-app-id';
@@ -56,6 +119,11 @@
 
         let app, db, auth;
         let userId = null;
+        
+        // IMPORTANT: The default image MUST be a publicly accessible URL or a Base64 string. 
+        // We'll use a placeholder as the old path might not be reliable.
+        const DEFAULT_QR_IMAGE_DATA = "https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code";
+
 
         // Application State
         window.state = {
@@ -63,7 +131,6 @@
             activeSection: 'home',
             loading: true,
             data: {
-                // ಕನ್ನಡ ಪದಗಳ ತಿದ್ದುಪಡಿ: 'ಪಡಕಣ್ಣಾಯ' -> 'ಪದಕಣ್ಣಾಯ', 'ಬಯಾರು' -> 'ಬಾಯಾರು'
                 guru: { 
                     name: 'ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು', 
                     bio: 'ಯಕ್ಷಗಾನದ ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು ಎರಡರಲ್ಲೂ ಪರಿಣತಿ ಹೊಂದಿದ ಮಹಾಗುರು. ಕಳೆದ ಹಲವು ದಶಕಗಳಿಂದ ಕಲಾ ಸೇವೆಯಲ್ಲಿ ತೊಡಗಿದ್ದಾರೆ.', 
@@ -76,6 +143,8 @@
                     suggestedAmount: '500.00',
                     collectionTotal: 0,
                     donationTotal: 0,
+                    // Renamed from qrImageUrl to qrImageData to store the Base64 string
+                    qrImageData: DEFAULT_QR_IMAGE_DATA, 
                 },
             },
             adminEditStudent: null,
@@ -87,12 +156,59 @@
         const EMAIL_ID = "srikrishnab83@gmail.com";
         const MOBILE_NUM = "9148014768";
 
+        // --- FILE TO BASE64 UTILITY ---
+        /**
+         * ಫೈಲ್ ಇನ್ಪುಟ್‌ನಿಂದ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಅದನ್ನು Base64 Data URI ಆಗಿ ಪರಿವರ್ತಿಸುತ್ತದೆ.
+         * ನಂತರ ಈ Base64 ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಹಿಡನ್ ಇನ್ಪುಟ್ ಮತ್ತು ಪೂರ್ವವೀಕ್ಷಣೆ ಇಮೇಜ್‌ಗೆ ಹೊಂದಿಸುತ್ತದೆ.
+         */
+        window.handleFileSelectAndConvert = (event) => {
+            const file = event.target.files[0];
+            const previewElement = document.getElementById('admin-qr-preview');
+            // 'admin-qr-base64-data' ಇದು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಕಳುಹಿಸಬೇಕಾದ ಡೇಟಾವನ್ನು ಹಿಡಿದಿಡುತ್ತದೆ
+            const hiddenInputElement = document.getElementById('admin-qr-base64-data'); 
+            
+            if (file) {
+                // QR ಕೋಡ್‌ಗೆ 300KB ಉತ್ತಮ ಮಿತಿ. Firestore ಡಾಕ್ಯುಮೆಂಟ್ ಮಿತಿ 1MB.
+                if (file.size > 300 * 1024) { 
+                     window.alertMessage('ಚಿತ್ರದ ಗಾತ್ರವು 300KB ಗಿಂತ ಕಡಿಮೆಯಿರಬೇಕು (ದೊಡ್ಡ ಫೈಲ್‌ಗಳು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ).', true);
+                     event.target.value = ''; // Clear the input
+                     hiddenInputElement.value = '';
+                     previewElement.src = window.state.data.qrData.qrImageData;
+                     return;
+                }
+
+                const reader = new FileReader();
+                
+                reader.onloadend = () => {
+                    // reader.result is the Base64 data URI
+                    hiddenInputElement.value = reader.result;
+                    previewElement.src = reader.result;
+                    window.alertMessage('ಚಿತ್ರವನ್ನು ಪೂರ್ವವೀಕ್ಷಣೆಗಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ. ಉಳಿಸಲು "ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಉಳಿಸಿ" ಒತ್ತಿರಿ.');
+                };
+                
+                reader.onerror = (error) => {
+                    console.error("Error reading file:", error);
+                    window.alertMessage('ಚಿತ್ರವನ್ನು ಓದುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                };
+                
+                reader.readAsDataURL(file); // Reads the file content as Base64 data URL
+            } else {
+                // Clear the hidden input if the file input is cleared
+                hiddenInputElement.value = window.state.data.qrData.qrImageData; 
+            }
+        };
+
+
         // --- FIREBASE INITIALIZATION AND AUTHENTICATION ---
         async function initFirebase() {
             try {
                 if (Object.keys(firebaseConfig).length > 0) {
                     app = initializeApp(firebaseConfig);
                     db = getFirestore(app);
+                    
+                    // ಡೀಬಗ್ ಲಾಗ್ ಮಟ್ಟವನ್ನು ಹೊಂದಿಸಿ
+                    setLogLevel('debug'); 
+
                     auth = getAuth(app);
 
                     if (initialAuthToken) {
@@ -111,7 +227,13 @@
                 }
             } catch (error) {
                 console.error("Error during Firebase setup or sign-in:", error);
-                document.getElementById('app').innerHTML = `<div class="p-8 text-center text-red-600">ಫೈರ್‌ಬೇಸ್ ಪ್ರಾರಂಭಿಸುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.</div>`;
+                // ಅನುಮತಿ ದೋಷದ ಬಗ್ಗೆ ಬಳಕೆದಾರರಿಗೆ ಸ್ಪಷ್ಟವಾಗಿ ತಿಳಿಸಿ.
+                let errorMessage = "ಫೈರ್‌ಬೇಸ್ ಪ್ರಾರಂಭಿಸುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.";
+                if (error.code === 'permission-denied' || error.message.includes('permission')) {
+                     errorMessage = "ಅನುಮತಿ ದೋಷ: ಡೇಟಾಬೇಸ್ ಸೆಕ್ಯುರಿಟಿ ರೂಲ್ಸ್‌ಗಳಿಂದ ಡೇಟಾವನ್ನು ಓದಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ.";
+                }
+                window.alertMessage(errorMessage, true);
+                document.getElementById('app').innerHTML = `<div class="p-8 text-center text-red-600">${errorMessage}</div>`;
             }
         }
 
@@ -151,7 +273,7 @@
                 renderApp();
             }, (error) => console.error("Error fetching Gallery:", error));
 
-             // 5. QR Data Config
+             // 5. QR Data Config - Updated to fetch QR image Data
             const configDocRef = doc(db, getCollectionPath('config'), 'payment');
             onSnapshot(configDocRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -159,6 +281,8 @@
                     window.state.data.qrData.suggestedAmount = data.suggestedAmount || '500.00';
                     window.state.data.qrData.collectionTotal = Number(data.collectionTotal) || 0;
                     window.state.data.qrData.donationTotal = Number(data.donationTotal) || 0;
+                    // Fetch new QR Image Data (Base64 string or URL)
+                    window.state.data.qrData.qrImageData = data.qrImageData || DEFAULT_QR_IMAGE_DATA; 
                 }
                 renderApp();
             }, (error) => console.error("Error fetching QR Data:", error));
@@ -176,7 +300,7 @@
             const address = document.getElementById('admission-address').value;
 
             if (!name || !age || !contact || !guardian || !address) {
-                alertMessage('ದಯವಿಟ್ಟು ಪ್ರವೇಶ ಅರ್ಜಿಯ ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.', true);
+                window.alertMessage('ದಯವಿಟ್ಟು ಪ್ರವೇಶ ಅರ್ಜಿಯ ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.', true);
                 return;
             }
 
@@ -205,7 +329,7 @@
             const programDetails = document.getElementById('booking-program-details').value;
 
             if (!bookerName || !eventDate || !eventLocation || !contact || !programDetails) {
-                alertMessage('ದಯವಿಟ್ಟು ಬುಕಿಂಗ್ ಅರ್ಜಿಯ ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.', true);
+                window.alertMessage('ದಯವಿಟ್ಟು ಬುಕಿಂಗ್ ಅರ್ಜಿಯ ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.', true);
                 return;
             }
 
@@ -227,7 +351,7 @@
         function openWhatsApp(message) {
             const encodedMessage = encodeURIComponent(message);
             window.open(`${WHATSAPP_LINK}&text=${encodedMessage}`, '_blank');
-            alertMessage('WhatsApp ಚಾಟ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ. ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಲು ದಯವಿಟ್ಟು "Send" ಬಟನ್ ಒತ್ತಿರಿ.');
+            window.alertMessage('WhatsApp ಚಾಟ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ. ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಲು ದಯವಿಟ್ಟು "Send" ಬಟನ್ ಒತ್ತಿರಿ.');
         }
 
         // --- ADMIN PANEL CRUD LOGIC ---
@@ -245,6 +369,7 @@
             } else {
                 messageElement.textContent = 'ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.';
                 messageElement.classList.add('text-red-500');
+                window.alertMessage('ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.', true);
             }
         };
 
@@ -256,11 +381,12 @@
                 }
             } catch (error) {
                 console.error("Error signing out:", error);
+                window.alertMessage('ಲಾಗ್‌ಔಟ್ ಮಾಡುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
             }
             window.state.isAdminLoggedIn = false;
             window.state.activeSection = 'home';
             renderApp();
-            alertMessage('ನೀವು ಯಶಸ್ವಿಯಾಗಿ ಲಾಗ್‌ಔಟ್ ಆಗಿದ್ದೀರಿ.');
+            window.alertMessage('ನೀವು ಯಶಸ್ವಿಯಾಗಿ ಲಾಗ್‌ಔಟ್ ಆಗಿದ್ದೀರಿ.');
         };
 
         window.saveGuruDetails = async () => {
@@ -272,11 +398,15 @@
             try {
                 await setDoc(guruRef, { name, bio, image });
                 window.state.adminEditGuru = false;
-                alertMessage('ಗುರುಗಳ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
+                window.alertMessage('ಗುರುಗಳ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
                 renderApp();
             } catch (e) {
                 console.error("Error saving Guru details: ", e);
-                alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
         
@@ -292,30 +422,40 @@
             try {
                 if (isNew) {
                     await addDoc(studentsColRef, data);
-                    alertMessage('ವಿದ್ಯಾರ್ಥಿ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
+                    window.alertMessage('ವಿದ್ಯಾರ್ಥಿ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
                 } else {
                     const docRef = doc(db, studentsColRef.path, id);
                     await setDoc(docRef, data);
-                    alertMessage('ವಿದ್ಯಾರ್ಥಿ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಸಂಪಾದಿಸಲಾಗಿದೆ.');
+                    window.alertMessage('ವಿದ್ಯಾರ್ಥಿ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಸಂಪಾದಿಸಲಾಗಿದೆ.');
                 }
                 window.state.adminEditStudent = null;
                 renderApp();
             } catch (e) {
                 console.error("Error saving student details: ", e);
-                alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
         
         window.deleteStudent = async (id) => {
-            if (!db || !confirm('ಈ ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲು ನೀವು ಖಚಿತಪಡಿಸುತ್ತೀರಾ?')) return;
+            if (!db) return;
+            // Removed forbidden window.confirm() check. Deletion is now immediate.
+
             const docRef = doc(db, getCollectionPath('students'), id);
             try {
                 await deleteDoc(docRef);
-                alertMessage('ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಅಳಿಸಲಾಗಿದೆ.');
+                window.alertMessage('ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಅಳಿಸಲಾಗಿದೆ.');
                 renderApp();
             } catch (e) {
                 console.error("Error deleting student: ", e);
-                alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಅಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
         
@@ -330,47 +470,68 @@
             try {
                 if (isNew) {
                     await addDoc(programsColRef, data);
-                    alertMessage('ಕಾರ್ಯಕ್ರಮ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
+                    window.alertMessage('ಕಾರ್ಯಕ್ರಮ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
                 } else {
                     const docRef = doc(db, programsColRef.path, id);
                     await setDoc(docRef, data);
-                    alertMessage('ಕಾರ್ಯಕ್ರಮ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಸಂಪಾದಿಸಲಾಗಿದೆ.');
+                    window.alertMessage('ಕಾರ್ಯಕ್ರಮ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಸಂಪಾದಿಸಲಾಗಿದೆ.');
                 }
                 window.state.adminEditProgram = null;
                 renderApp();
             } catch (e) {
                 console.error("Error saving program details: ", e);
-                alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
         
         window.deleteProgram = async (id) => {
-            if (!db || !confirm('ಈ ಕಾರ್ಯಕ್ರಮವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲು ನೀವು ಖಚಿತಪಡಿಸುತ್ತೀರಾ?')) return;
+            if (!db) return;
+            // Removed forbidden window.confirm() check. Deletion is now immediate.
+
             const docRef = doc(db, getCollectionPath('programs'), id);
             try {
                 await deleteDoc(docRef);
-                alertMessage('ಕಾರ್ಯಕ್ರಮವನ್ನು ಅಳಿಸಲಾಗಿದೆ.');
+                window.alertMessage('ಕಾರ್ಯಕ್ರಮವನ್ನು ಅಳಿಸಲಾಗಿದೆ.');
                 renderApp();
             } catch (e) {
                 console.error("Error deleting program: ", e);
-                alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಅಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
 
+        // UPDATED: Now saves the Base64 data from the hidden input
         window.saveQRCodeData = async () => {
             if (!db) return;
             const configRef = doc(db, getCollectionPath('config'), 'payment');
             const suggestedAmount = document.getElementById('admin-qr-suggested').value;
             const collectionTotal = Number(document.getElementById('admin-qr-collection').value);
             const donationTotal = Number(document.getElementById('admin-qr-donation').value);
+            // Get the Base64 data from the hidden input
+            const qrImageData = document.getElementById('admin-qr-base64-data').value; 
 
             try {
-                await setDoc(configRef, { suggestedAmount, collectionTotal, donationTotal });
-                alertMessage('QR/ದೇಣಿಗೆ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
+                // Save qrImageData (which is Base64 or the fallback URL)
+                await setDoc(configRef, { suggestedAmount, collectionTotal, donationTotal, qrImageData });
+                window.alertMessage('QR/ದೇಣಿಗೆ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
+                // Update state immediately for next render
+                window.state.data.qrData.qrImageData = qrImageData; 
                 renderApp();
             } catch (e) {
                 console.error("Error saving QR data: ", e);
-                alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                // Check for Firebase permission error and provide a better message
+                if (e.code && e.code.includes('permission-denied')) {
+                    window.alertMessage('QR ಕೋಡ್ ಉಳಿಸಲು ಅನುಮತಿ ನಿರಾಕರಿಸಲಾಗಿದೆ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('QR ಕೋಡ್ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ. ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                }
             }
         };
 
@@ -379,7 +540,7 @@
             const galleryColRef = collection(db, getCollectionPath('gallery'));
             const url = document.getElementById('admin-gallery-url').value;
             if (!url) {
-                alertMessage('ದಯವಿಟ್ಟು ಚಿತ್ರ ಅಥವಾ ವಿಡಿಯೋ URL ಅನ್ನು ನಮೂದಿಸಿ.', true);
+                window.alertMessage('ದಯವಿಟ್ಟು ಚಿತ್ರ ಅಥವಾ ವಿಡಿಯೋ URL ಅನ್ನು ನಮೂದಿಸಿ.', true);
                 return;
             }
 
@@ -391,36 +552,47 @@
             try {
                 await addDoc(galleryColRef, { url, type });
                 document.getElementById('admin-gallery-url').value = '';
-                alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
+                window.alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
                 renderApp();
             } catch (e) {
                 console.error("Error adding gallery item: ", e);
-                alertMessage('ಐಟಂ ಸೇರಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                 if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಐಟಂ ಸೇರಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
 
         window.deleteGalleryItem = async (id) => {
-            if (!db || !confirm('ಈ ಗ್ಯಾಲರಿ ಐಟಂ ಅನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಲು ನೀವು ಖಚಿತಪಡಿಸುತ್ತೀರಾ?')) return;
+            if (!db) return;
+            // Removed forbidden window.confirm() check. Deletion is now immediate.
+
             const docRef = doc(db, getCollectionPath('gallery'), id);
             try {
                 await deleteDoc(docRef);
-                alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಅಳಿಸಲಾಗಿದೆ.');
+                window.alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಅಳಿಸಲಾಗಿದೆ.');
                 renderApp();
             } catch (e) {
                 console.error("Error deleting gallery item: ", e);
-                alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                if (e.code && e.code.includes('permission-denied')) {
+                     window.alertMessage('ಅಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
+                } else {
+                    window.alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                }
             }
         };
 
         // --- UI RENDER FUNCTIONS ---
 
         function createPublicView() {
+            // NOTE: Using qrImageData instead of qrImageUrl
             const { guru, students, programs, gallery, qrData } = window.state.data;
             
             // Generate Students HTML
             const studentsHtml = students.map(s => `
                 <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-                    <img src="${s.photo}" onerror="this.onerror=null;this.src='https://placehold.co/100x100/A0A0A0/000000?text=S';" alt="${s.name} Photo" class="w-24 h-24 object-cover rounded-full mx-auto mb-4 border-4 border-yak-primary">
+                    <img src="${s.photo}" onerror="alertMessage('ಗುರುಗಳ ಚಿತ್ರ ಲೋಡ್ ಆಗುತ್ತಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/100x100/A0A0A0/000000?text=S';" alt="${s.name} Photo" class="w-24 h-24 object-cover rounded-full mx-auto mb-4 border-4 border-yak-primary">
                     <h4 class="text-xl font-semibold text-yak-dark mb-2">${s.name}</h4>
                     <p class="italic text-gray-600">" ${s.review} "</p>
                 </div>
@@ -444,7 +616,7 @@
                                 </div>`;
                     }
                 }
-                return `<img src="${item.url}" onerror="this.onerror=null;this.src='https://placehold.co/400x250/555/FFF?text=Image';" alt="Gallery Image" class="w-full h-48 object-cover rounded-xl shadow-lg">`;
+                return `<img src="${item.url}" onerror="alertMessage('ಗ್ಯಾಲರಿ ಚಿತ್ರ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/400x250/555/FFF?text=Image';" alt="Gallery Image" class="w-full h-48 object-cover rounded-xl shadow-lg">`;
             }).join('');
 
 
@@ -491,7 +663,9 @@
                     <section id="guru" class="p-8 bg-white rounded-xl shadow-2xl">
                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಗುರುಗಳ ಪರಿಚಯ</h3>
                         <div class="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
-                            <img src="${guru.image}" onerror="this.onerror=null;this.src='https://placehold.co/200x200/555/FFF?text=Guru';" alt="${guru.name} Photo" class="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-yak-primary flex-shrink-0">
+                            <img src="${guru.image}" 
+                                onerror="alertMessage('ಗುರುಗಳ ಚಿತ್ರ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/200x200/555/FFF?text=Guru';" 
+                                alt="${guru.name} Photo" class="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-yak-primary flex-shrink-0">
                             <div>
                                 <h4 class="text-2xl font-extrabold text-yak-primary mb-3">${guru.name}</h4>
                                 <p class="text-gray-700 leading-relaxed">${guru.bio}</p>
@@ -503,7 +677,7 @@
                     <section id="students">
                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಯಶಸ್ವಿ ವಿದ್ಯಾರ್ಥಿಗಳು (ವಿಮರ್ಶೆಗಳು)</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            ${studentsHtml || '<p class="col-span-4 text-center text-gray-500">ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿದೆ.</p>'}
+                            ${studentsHtml || '<p class="col-span-4 text-center text-gray-500">ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿದೆ。</p>'}
                         </div>
                     </section>
 
@@ -511,7 +685,7 @@
                     <section id="gallery" class="bg-white p-8 rounded-xl shadow-2xl">
                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಛಾಯಾಚಿತ್ರ ಮತ್ತು ವಿಡಿಯೋ ಗ್ಯಾಲರಿ</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            ${galleryHtml || '<p class="col-span-3 text-center text-gray-500">ಗ್ಯಾಲರಿ ಐಟಂಗಳು ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿವೆ.</p>'}
+                            ${galleryHtml || '<p class="col-span-3 text-center text-gray-500">ಗ್ಯಾಲರಿ ಐಟಂಗಳು ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿವೆ。</p>'}
                         </div>
                     </section>
 
@@ -519,7 +693,7 @@
                     <section id="programs">
                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ನಮ್ಮ ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳು</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                             ${programsHtml || '<p class="col-span-2 text-gray-500 text-center">ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಪ್ರಕಟವಾಗಲಿದೆ.</p>'}
+                             ${programsHtml || '<p class="col-span-2 text-gray-500 text-center">ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಪ್ರಕಟವಾಗಲಿದೆ。</p>'}
                         </div>
                     </section>
                     
@@ -567,8 +741,10 @@
                         
                         <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
                             <div class="bg-white p-4 rounded-lg shadow-inner flex-shrink-0">
-                                <!-- Placeholder QR Image - replace with actual QR image if available -->
-                                <img src="https://placehold.co/200x200/222/FFF?text=QR+Code" alt="QR Code for Payment" class="w-48 h-48 rounded-lg">
+                                <!-- UPDATED: Using qrImageData (Base64 or URL) from state -->
+                                <img id="public-qr-preview" src="${qrData.qrImageData}" 
+                                     onerror="alertMessage('QR ಕೋಡ್ ಚಿತ್ರ ಲೋಡ್ ಆಗುತ್ತಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿರ್ವಾಹಕ ಫಲಕದಲ್ಲಿ URL/ಚಿತ್ರವನ್ನು ಪರಿಶೀಲಿಸಿ.', true); this.onerror=null;this.src='https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code+Missing';" 
+                                     alt="QR Code for Payment" class="w-48 h-48 rounded-lg">
                             </div>
                             <div class="text-center md:text-left">
                                 <p class="text-xl font-semibold mb-2">ಶಿಫಾರಸು ಮಾಡಿದ ದೇಣಿಗೆ ಮೊತ್ತ:</p>
@@ -611,7 +787,7 @@
             `;
         }
 
-        // --- ADMIN VIEW RENDERERS ---
+        // --- ADMIN VIEW RENDERERS (Unchanged logic, kept inside module) ---
 
         function createAdminLoginView() {
             return `
@@ -621,7 +797,7 @@
                         <form onsubmit="event.preventDefault(); handleAdminLogin();" class="space-y-4">
                             <div>
                                 <label for="admin-password" class="block text-sm font-medium text-gray-700">ಪಾಸ್‌ವರ್ಡ್</label>
-                                <!-- SECURITY FIX: Removed password hint, kept type="password" -->
+                                <!-- Removed password hint, kept type="password" -->
                                 <input type="password" id="admin-password" placeholder="ಪಾಸ್‌ವರ್ಡ್" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-yak-primary focus:border-yak-primary" required>
                             </div>
                             <button type="submit" class="w-full bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark transition duration-300">ಲಾಗಿನ್</button>
@@ -671,7 +847,7 @@
                 default:
                     return `<div class="p-10 bg-white rounded-xl shadow-lg text-center text-xl text-gray-600">
                         <p>ನಿರ್ವಹಿಸಲು ಮೇಲಿನ ಆಯ್ಕೆಗಳಲ್ಲಿ ಒಂದನ್ನು ಆರಿಸಿ.</p>
-                        <p class="mt-4 text-sm text-yak-dark">ಗಮನಿಸಿ: ವಾಟ್ಸಾಪ್ ಮೂಲಕ ಸಲ್ಲಿಸಿದ ಅರ್ಜಿಗಳು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಹೋಗುವುದಿಲ್ಲ. ಅವುಗಳನ್ನು ನೇರವಾಗಿ ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬೇಕು.</p>
+                        <p class="mt-4 text-sm text-yak-dark">ಗಮನಿಸಿ: ವಾಟ್ಸಾಪ್ ಮೂಲಕ ಸಲ್ಲಿಸಿದ ಅರ್ಜಿಗಳು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಹೋಗುವುದಿಲ್ಲ. ಅವುಗಳನ್ನು ನೇರವಾಗಿ ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬೇಕು。</p>
                     </div>`;
             }
         }
@@ -739,7 +915,7 @@
                                     <button onclick="deleteStudent('${s.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600">ತೆಗೆದುಹಾಕಿ</button>
                                 </div>
                             </div>
-                        `).join('') || '<p class="text-center text-gray-500">ಯಾವುದೇ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.</p>'}
+                        `).join('') || '<p class="text-center text-gray-500">ಯಾವುದೇ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ。</p>'}
                     </div>
                 </div>
             `;
@@ -779,14 +955,15 @@
                                     <button onclick="deleteProgram('${p.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600">ತೆಗೆದುಹಾಕಿ</button>
                                 </div>
                             </div>
-                        `).join('') || '<p class="text-center text-gray-500">ಯಾವುದೇ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.</p>'}
+                        `).join('') || '<p class="text-center text-gray-500">ಯಾವುದೇ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ。</p>'}
                     </div>
                 </div>
             `;
         }
 
+        // UPDATED: QR Image upload management
         function renderGalleryAdmin() {
-            const { suggestedAmount, collectionTotal, donationTotal } = window.state.data.qrData;
+            const { suggestedAmount, collectionTotal, donationTotal, qrImageData } = window.state.data.qrData;
             return `
                 <div class="bg-white p-8 rounded-xl shadow-lg">
                     <h3 class="text-2xl font-bold mb-6 text-yak-dark">ಗ್ಯಾಲರಿ ಮತ್ತು ದೇಣಿಗೆ QR ಕೋಡ್ ನಿರ್ವಹಣೆ</h3>
@@ -804,9 +981,37 @@
                             <label class="block text-sm font-medium text-gray-700 mt-4">ದೇಣಿಗೆ ಒಟ್ಟು ಮೊತ್ತ (ಕೌಂಟರ್)</label>
                             <input type="number" id="admin-qr-donation" placeholder="ಪ್ರಸ್ತುತ ದೇಣಿಗೆ ಮೊತ್ತ" value="${donationTotal}" class="w-full p-2 border rounded-lg">
                             
-                            <button type="submit" class="w-full bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark">ಉಳಿಸಿ</button>
+                            <!-- QR Image Upload Section -->
+                            <div class="pt-4 border-t mt-4">
+                                <h5 class="text-lg font-bold mb-4">QR ಕೋಡ್ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (300KB ಮಿತಿ)</h5>
+                                
+                                <div class="text-center mb-4 p-4 border border-gray-300 rounded-lg">
+                                    <h6 class="text-sm font-semibold mb-2">ಪ್ರಸ್ತುತ ಚಿತ್ರ:</h6>
+                                    <!-- Use the state data for preview on load -->
+                                    <img id="admin-qr-preview" 
+                                         src="${qrImageData || DEFAULT_QR_IMAGE_DATA}" 
+                                         onerror="alertMessage('QR ಚಿತ್ರದ ನಿರ್ವಾಹಕ ಪೂರ್ವವೀಕ್ಷಣೆ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/100x100/A0A0A0/000000?text=QR+Missing';" 
+                                         alt="Current QR Code" class="w-32 h-32 object-contain mx-auto rounded-lg border-2 border-yak-dark">
+                                    <p class="text-xs text-gray-500 mt-2 truncate">${qrImageData.length > 50 ? 'Base64 Data URI' : qrImageData}</p>
+                                </div>
+                                
+                                <div class="file-input-container">
+                                    <input type="file" id="admin-qr-image-upload" accept="image/*" onchange="handleFileSelectAndConvert(event);" class="hidden-file-input">
+                                    <label for="admin-qr-image-upload" class="custom-file-upload">
+                                        ಚಿತ್ರವನ್ನು ಆರಿಸಿ (Choose Image)
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-2">QR ಚಿತ್ರವನ್ನು ಬದಲಾಯಿಸಲು ಹೊಸ ಫೈಲ್ ಆರಿಸಿ.</p>
+                                </div>
+                                
+                                <!-- HIDDEN INPUT: Stores the Base64 data to be saved to Firestore. -->
+                                <!-- It is initialized with the current qrImageData from state. -->
+                                <input type="hidden" id="admin-qr-base64-data" value="${qrImageData || DEFAULT_QR_IMAGE_DATA}">
+                            </div>
+                            <!-- End QR Image Upload Section -->
+
+                            <button type="submit" class="w-full bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark">ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಉಳಿಸಿ</button>
                         </form>
-                        <p class="mt-4 text-sm text-gray-600">ಈ ಮೊತ್ತಗಳು ಕೌಂಟರ್‌ಗಳಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. ವಾಸ್ತವಿಕ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಿದ ನಂತರ ನೀವು ಇಲ್ಲಿ ಕೈಯಾರೆ (Manually) ಅಪ್ಡೇಟ್ ಮಾಡಬಹುದು.</p>
+                        <p class="mt-4 text-sm text-gray-600">ಗಮನಿಸಿ: ಈ ಮೊತ್ತಗಳು ಕೌಂಟರ್‌ಗಳಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. ವಾಸ್ತವಿಕ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಿದ ನಂತರ ನೀವು ಇಲ್ಲಿ ಕೈಯಾರೆ (Manually) ಅಪ್ಡೇಟ್ ಮಾಡಬಹುದು。</p>
                     </div>
 
                     <!-- Gallery Add Form -->
@@ -829,7 +1034,7 @@
                                 </div>
                                 <button onclick="deleteGalleryItem('${item.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600 flex-shrink-0">ತೆಗೆದುಹಾಕಿ</button>
                             </div>
-                        `).join('') || '<p class="text-center text-gray-500">ಗ್ಯಾಲರಿಯಲ್ಲಿ ಯಾವುದೇ ಐಟಂಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.</p>'}
+                        `).join('') || '<p class="text-center text-gray-500">ಗ್ಯಾಲರಿಯಲ್ಲಿ ಯಾವುದೇ ಐಟಂಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ。</p>'}
                     </div>
                 </div>
             `;
@@ -870,23 +1075,6 @@
                 }, 100); 
             }
         };
-
-        // --- CUSTOM ALERT BOX ---
-        function alertMessage(message, isError = false) {
-            const alertBox = document.getElementById('custom-alert');
-            alertBox.textContent = message;
-            alertBox.className = `fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 ${isError ? 'bg-red-600' : 'bg-green-600'} z-50`;
-            alertBox.style.opacity = 1;
-            setTimeout(() => {
-                alertBox.style.opacity = 0;
-            }, 5000);
-        }
-
-        const alertDiv = document.createElement('div');
-        alertDiv.id = 'custom-alert';
-        alertDiv.className = 'fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 bg-green-600 opacity-0 z-50';
-        document.body.appendChild(alertDiv);
-
 
         // --- APPLICATION STARTUP ---
         window.onload = initFirebase;
