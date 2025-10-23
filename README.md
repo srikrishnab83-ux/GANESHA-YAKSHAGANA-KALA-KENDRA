@@ -16,6 +16,35 @@
         .section-header {
             border-left: 5px solid #ff7a00; /* Yakshagana orange/gold accent */
         }
+        .file-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Custom styling to make the file input look like a button */
+        .custom-file-upload {
+            border: 2px solid #ff7a00;
+            display: inline-block;
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #ff7a00;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .custom-file-upload:hover {
+            background-color: #ff7a00;
+            color: white;
+        }
+        .hidden-file-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
     </style>
     <!-- Configure Tailwind for custom colors (Yakshagana theme) -->
     <script>
@@ -42,7 +71,6 @@
     </div>
 
     <!-- ಕಸ್ಟಮ್ ಅಲರ್ಟ್/ಟೋಸ್ಟ್ ಬಾಕ್ಸ್ (Custom Alert/Toast Box) -->
-    <!-- ಇದು Global Scope ನಲ್ಲಿ alertMessage ಕಾರ್ಯವನ್ನು ಬಳಸಲು ಅವಕಾಶ ನೀಡುತ್ತದೆ -->
     <div id="custom-alert" class="fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 bg-green-600 opacity-0 z-50 pointer-events-none">
         <!-- ಸಂದೇಶವು ಇಲ್ಲಿ ಪ್ರದರ್ಶನಗೊಳ್ಳುತ್ತದೆ -->
     </div>
@@ -51,12 +79,10 @@
     <script>
         /**
          * alert() ಬದಲಿಗೆ ಬಳಸಲು ಕಸ್ಟಮ್ ಟೋಸ್ಟ್ ಮೆಸೇಜ್ ಕಾರ್ಯ.
-         * ಇದು onerror ಮುಂತಾದ HTML ಈವೆಂಟ್‌ಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸಲು ವಿಂಡೋಗೆ ಲಗತ್ತಿಸಲಾಗಿದೆ.
          */
         function alertMessage(message, isError = false) {
             const alertBox = document.getElementById('custom-alert');
             
-            // ಜಾಗತಿಕವಾಗಿ ವ್ಯಾಖ್ಯಾನಿಸಲಾಗಿದೆಯೇ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಲು console.log
             console.log(`[ALERT] ${isError ? 'ERROR' : 'INFO'}: ${message}`); 
             
             alertBox.textContent = message;
@@ -94,8 +120,7 @@
         let app, db, auth;
         let userId = null;
         
-        // Default QR Image URL (from user upload)
-        const DEFAULT_QR_IMAGE_URL = "/files/WhatsApp%20Image%202025-10-21%20at%203.15.29%20PM.jpeg";
+        const DEFAULT_QR_IMAGE_DATA = "https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code";
 
 
         // Application State
@@ -104,7 +129,6 @@
             activeSection: 'home',
             loading: true,
             data: {
-                // ಕನ್ನಡ ಪದಗಳ ತಿದ್ದುಪಡಿ: 'ಪಡಕಣ್ಣಾಯ' -> 'ಪದಕಣ್ಣಾಯ', 'ಬಯಾರು' -> 'ಬಾಯಾರು'
                 guru: { 
                     name: 'ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು', 
                     bio: 'ಯಕ್ಷಗಾನದ ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು ಎರಡರಲ್ಲೂ ಪರಿಣತಿ ಹೊಂದಿದ ಮಹಾಗುರು. ಕಳೆದ ಹಲವು ದಶಕಗಳಿಂದ ಕಲಾ ಸೇವೆಯಲ್ಲಿ ತೊಡಗಿದ್ದಾರೆ.', 
@@ -117,7 +141,7 @@
                     suggestedAmount: '500.00',
                     collectionTotal: 0,
                     donationTotal: 0,
-                    qrImageUrl: DEFAULT_QR_IMAGE_URL, // New field to hold the dynamic QR URL
+                    qrImageData: DEFAULT_QR_IMAGE_DATA, 
                 },
             },
             adminEditStudent: null,
@@ -128,6 +152,113 @@
         const WHATSAPP_LINK = "https://wa.me/qr/JGB3XSEHKWFDD1";
         const EMAIL_ID = "srikrishnab83@gmail.com";
         const MOBILE_NUM = "9148014768";
+
+        // --- FIREBASE SECURITY RULES INSTRUCTION ---
+        // ದೋಷ: "Missing or insufficient permissions" ಅನ್ನು ಸರಿಪಡಿಸಲು ಈ ಬ್ಲಾಕ್ ಅನ್ನು ಸೇರಿಸಲಾಗಿದೆ.
+        // ಇದು ಸಾರ್ವಜನಿಕ ಡೇಟಾ ಮಾರ್ಗದಲ್ಲಿ (public data path) ಯಾರಿಗಾದರೂ ಓದಲು ಅನುಮತಿ ನೀಡುತ್ತದೆ.
+        // [CANVAS_FIREBASE_RULES_START]
+        // rules_version = '2';
+        // service cloud.firestore {
+        //   match /databases/{database}/documents {
+        //     // Public data used for the Yakshagana website (Read-only for everyone)
+        //     match /artifacts/{appId}/public/data/{document=**} {
+        //       allow read: if true;
+        //       allow write: if request.auth.uid != null;
+        //     }
+        //     // Private user data (if any)
+        //     match /artifacts/{appId}/users/{userId}/{document=**} {
+        //       allow read, write: if request.auth.uid == userId;
+        //     }
+        //   }
+        // }
+        // [CANVAS_FIREBASE_RULES_END]
+        
+        // --- FILE TO BASE64 UTILITY (QR CODE) ---
+        /**
+         * ಫೈಲ್ ಇನ್ಪುಟ್‌ನಿಂದ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಅದನ್ನು Base64 Data URI ಆಗಿ ಪರಿವರ್ತಿಸುತ್ತದೆ.
+         */
+        window.handleFileSelectAndConvert = (event) => {
+            const file = event.target.files[0];
+            const previewElement = document.getElementById('admin-qr-preview');
+            // 'admin-qr-base64-data' ಇದು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಕಳುಹಿಸಬೇಕಾದ ಡೇಟಾವನ್ನು ಹಿಡಿದಿಡುತ್ತದೆ
+            const hiddenInputElement = document.getElementById('admin-qr-base64-data'); 
+            
+            if (file) {
+                // QR ಕೋಡ್‌ಗೆ 300KB ಉತ್ತಮ ಮಿತಿ.
+                if (file.size > 300 * 1024) { 
+                     window.alertMessage('ಚಿತ್ರದ ಗಾತ್ರವು 300KB ಗಿಂತ ಕಡಿಮೆಯಿರಬೇಕು (ದೊಡ್ಡ ಫೈಲ್‌ಗಳು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ).', true);
+                     event.target.value = ''; // Clear the input
+                     hiddenInputElement.value = '';
+                     previewElement.src = window.state.data.qrData.qrImageData;
+                     return;
+                }
+
+                const reader = new FileReader();
+                
+                reader.onloadend = () => {
+                    // reader.result is the Base64 data URI
+                    hiddenInputElement.value = reader.result;
+                    previewElement.src = reader.result;
+                    window.alertMessage('QR ಚಿತ್ರವನ್ನು ಪೂರ್ವವೀಕ್ಷಣೆಗಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ. ಉಳಿಸಲು "ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಉಳಿಸಿ" ಒತ್ತಿರಿ.');
+                };
+                
+                reader.onerror = (error) => {
+                    console.error("Error reading QR file:", error);
+                    window.alertMessage('ಚಿತ್ರವನ್ನು ಓದುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                };
+                
+                reader.readAsDataURL(file); // Reads the file content as Base64 data URL
+            } else {
+                // Clear the hidden input if the file input is cleared
+                hiddenInputElement.value = window.state.data.qrData.qrImageData; 
+            }
+        };
+
+        // --- FILE TO BASE64 UTILITY (GALLERY) ---
+        /**
+         * ಫೈಲ್ ಇನ್ಪುಟ್‌ನಿಂದ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಅದನ್ನು Base64 Data URI ಆಗಿ ಪರಿವರ್ತಿಸುತ್ತದೆ.
+         * Gallery ಗಾಗಿ ಮಾತ್ರ. (Only for Gallery)
+         */
+        window.handleGalleryFileSelectAndConvert = (event) => {
+            const file = event.target.files[0];
+            // 'admin-gallery-base64-data' ಇದು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಕಳುಹಿಸಬೇಕಾದ ಡೇಟಾವನ್ನು ಹಿಡಿದಿಡುತ್ತದೆ
+            const hiddenInputElement = document.getElementById('admin-gallery-base64-data'); 
+            
+            // Only allow images here.
+            if (!file || !file.type.startsWith('image/')) {
+                 window.alertMessage('ದಯವಿಟ್ಟು ಚಿತ್ರ ಫೈಲ್ (JPEG, PNG, ಇತ್ಯಾದಿ) ಮಾತ್ರ ಆಯ್ಕೆಮಾಡಿ. ವೀಡಿಯೊಗಳನ್ನು URL ಮೂಲಕ ಸೇರಿಸಿ.', true);
+                 event.target.value = '';
+                 hiddenInputElement.value = '';
+                 return;
+            }
+
+            if (file) {
+                // ಗ್ಯಾಲರಿ ಚಿತ್ರಕ್ಕೆ 500KB ಮಿತಿ.
+                if (file.size > 500 * 1024) { 
+                     window.alertMessage('ಗ್ಯಾಲರಿ ಚಿತ್ರದ ಗಾತ್ರವು 500KB ಗಿಂತ ಕಡಿಮೆಯಿರಬೇಕು.', true);
+                     event.target.value = ''; // Clear the input
+                     hiddenInputElement.value = '';
+                     return;
+                }
+
+                const reader = new FileReader();
+                
+                reader.onloadend = () => {
+                    hiddenInputElement.value = reader.result;
+                    window.alertMessage(`ಚಿತ್ರವನ್ನು ಗ್ಯಾಲರಿಗಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ (${file.name}). ಸೇರಿಸಲು ಕೆಳಗಿನ "ಗ್ಯಾಲರಿಗೆ ಸೇರಿಸಿ" ಒತ್ತಿರಿ.`);
+                };
+                
+                reader.onerror = (error) => {
+                    console.error("Error reading gallery file:", error);
+                    window.alertMessage('ಚಿತ್ರವನ್ನು ಓದುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                hiddenInputElement.value = ''; 
+            }
+        };
+
 
         // --- FIREBASE INITIALIZATION AND AUTHENTICATION ---
         async function initFirebase() {
@@ -195,15 +326,19 @@
                 renderApp();
             }, (error) => console.error("Error fetching Programs:", error));
 
-            // 4. Gallery Collection
+            // 4. Gallery Collection (Sorted by timestamp for newer items first, though not mandatory)
             const galleryColRef = collection(db, getCollectionPath('gallery'));
             onSnapshot(galleryColRef, (snapshot) => {
-                window.state.data.gallery = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.state.data.gallery = snapshot.docs
+                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                    // Simple in-memory sorting, since Firestore query orderBy is avoided.
+                    .sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)); 
+
                 window.state.loading = false;
                 renderApp();
             }, (error) => console.error("Error fetching Gallery:", error));
 
-             // 5. QR Data Config - Updated to fetch QR image URL
+             // 5. QR Data Config - Updated to fetch QR image Data
             const configDocRef = doc(db, getCollectionPath('config'), 'payment');
             onSnapshot(configDocRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -211,8 +346,8 @@
                     window.state.data.qrData.suggestedAmount = data.suggestedAmount || '500.00';
                     window.state.data.qrData.collectionTotal = Number(data.collectionTotal) || 0;
                     window.state.data.qrData.donationTotal = Number(data.donationTotal) || 0;
-                    // Fetch new QR Image URL
-                    window.state.data.qrData.qrImageUrl = data.qrImageUrl || DEFAULT_QR_IMAGE_URL; 
+                    // Fetch new QR Image Data (Base64 string or URL)
+                    window.state.data.qrData.qrImageData = data.qrImageData || DEFAULT_QR_IMAGE_DATA; 
                 }
                 renderApp();
             }, (error) => console.error("Error fetching QR Data:", error));
@@ -437,18 +572,22 @@
             }
         };
 
-        // UPDATED: Added more informative error handling for permission issues
+        // UPDATED: Now saves the Base64 data from the hidden input
         window.saveQRCodeData = async () => {
             if (!db) return;
             const configRef = doc(db, getCollectionPath('config'), 'payment');
             const suggestedAmount = document.getElementById('admin-qr-suggested').value;
             const collectionTotal = Number(document.getElementById('admin-qr-collection').value);
             const donationTotal = Number(document.getElementById('admin-qr-donation').value);
-            const qrImageUrl = document.getElementById('admin-qr-image-url').value; // Correctly retrieves the value
+            // Get the Base64 data from the hidden input
+            const qrImageData = document.getElementById('admin-qr-base64-data').value; 
 
             try {
-                await setDoc(configRef, { suggestedAmount, collectionTotal, donationTotal, qrImageUrl });
+                // Save qrImageData (which is Base64 or the fallback URL)
+                await setDoc(configRef, { suggestedAmount, collectionTotal, donationTotal, qrImageData });
                 window.alertMessage('QR/ದೇಣಿಗೆ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
+                // Update state immediately for next render
+                window.state.data.qrData.qrImageData = qrImageData; 
                 renderApp();
             } catch (e) {
                 console.error("Error saving QR data: ", e);
@@ -461,23 +600,46 @@
             }
         };
 
+        // UPDATED: Now handles both URL (for video) and Base64 (for local image)
         window.addGalleryItem = async () => {
             if (!db) return;
             const galleryColRef = collection(db, getCollectionPath('gallery'));
-            const url = document.getElementById('admin-gallery-url').value;
-            if (!url) {
-                window.alertMessage('ದಯವಿಟ್ಟು ಚಿತ್ರ ಅಥವಾ ವಿಡಿಯೋ URL ಅನ್ನು ನಮೂದಿಸಿ.', true);
-                return;
-            }
+            
+            // Check both URL input and Base64 hidden input
+            const urlInput = document.getElementById('admin-gallery-url').value.trim();
+            const base64Data = document.getElementById('admin-gallery-base64-data').value;
+            const fileInput = document.getElementById('admin-gallery-file-upload');
 
-            let type = 'image';
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                type = 'video';
+            let url = null;
+            let type = null;
+            
+            if (urlInput) {
+                // If URL is provided, treat it as a video or external image link
+                url = urlInput;
+                if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                    type = 'video';
+                } else {
+                    type = 'image';
+                }
+            } else if (base64Data) {
+                // If Base64 data is present, treat it as a locally uploaded image
+                url = base64Data;
+                type = 'image';
+            } else {
+                 window.alertMessage('ದಯವಿಟ್ಟು ಚಿತ್ರ ಫೈಲ್ ಆರಿಸಿ ಅಥವಾ YouTube ವಿಡಿಯೋ URL ಅನ್ನು ನಮೂದಿಸಿ.', true);
+                 return;
             }
+            
+            const data = { url, type, timestamp: new Date() };
 
             try {
-                await addDoc(galleryColRef, { url, type });
+                await addDoc(galleryColRef, data);
+                
+                // Clear inputs after successful save
                 document.getElementById('admin-gallery-url').value = '';
+                document.getElementById('admin-gallery-base64-data').value = '';
+                fileInput.value = ''; // Clear file input
+                
                 window.alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
                 renderApp();
             } catch (e) {
@@ -512,6 +674,7 @@
         // --- UI RENDER FUNCTIONS ---
 
         function createPublicView() {
+            // NOTE: Using qrImageData instead of qrImageUrl
             const { guru, students, programs, gallery, qrData } = window.state.data;
             
             // Generate Students HTML
@@ -602,7 +765,7 @@
                     <section id="students">
                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಯಶಸ್ವಿ ವಿದ್ಯಾರ್ಥಿಗಳು (ವಿಮರ್ಶೆಗಳು)</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            ${studentsHtml || '<p class="col-span-4 text-center text-gray-500">ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿದೆ.</p>'}
+                            ${studentsHtml || '<p class="col-span-4 text-center text-gray-500">ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿದೆ。</p>'}
                         </div>
                     </section>
 
@@ -610,7 +773,7 @@
                     <section id="gallery" class="bg-white p-8 rounded-xl shadow-2xl">
                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಛಾಯಾಚಿತ್ರ ಮತ್ತು ವಿಡಿಯೋ ಗ್ಯಾಲರಿ</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            ${galleryHtml || '<p class="col-span-3 text-center text-gray-500">ಗ್ಯಾಲರಿ ಐಟಂಗಳು ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿವೆ.</p>'}
+                            ${galleryHtml || '<p class="col-span-3 text-center text-gray-500">ಗ್ಯಾಲರಿ ಐಟಂಗಳು ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿವೆ。</p>'}
                         </div>
                     </section>
 
@@ -666,9 +829,9 @@
                         
                         <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
                             <div class="bg-white p-4 rounded-lg shadow-inner flex-shrink-0">
-                                <!-- UPDATED: Using the dynamic QR Image URL from state with robust error handling -->
-                                <img src="${qrData.qrImageUrl}" 
-                                     onerror="alertMessage('QR ಕೋಡ್ ಚಿತ್ರ ಲೋಡ್ ಆಗುತ್ತಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿರ್ವಾಹಕ ಫಲಕದಲ್ಲಿ URL ಪರಿಶೀಲಿಸಿ.', true); this.onerror=null;this.src='https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code+Missing';" 
+                                <!-- UPDATED: Using qrImageData (Base64 or URL) from state -->
+                                <img id="public-qr-preview" src="${qrData.qrImageData}" 
+                                     onerror="alertMessage('QR ಕೋಡ್ ಚಿತ್ರ ಲೋಡ್ ಆಗುತ್ತಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿರ್ವಾಹಕ ಫಲಕದಲ್ಲಿ URL/ಚಿತ್ರವನ್ನು ಪರಿಶೀಲಿಸಿ.', true); this.onerror=null;this.src='https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code+Missing';" 
                                      alt="QR Code for Payment" class="w-48 h-48 rounded-lg">
                             </div>
                             <div class="text-center md:text-left">
@@ -886,9 +1049,9 @@
             `;
         }
 
-        // UPDATED: QR Image URL management
+        // UPDATED: QR Image upload management
         function renderGalleryAdmin() {
-            const { suggestedAmount, collectionTotal, donationTotal } = window.state.data.qrData;
+            const { suggestedAmount, collectionTotal, donationTotal, qrImageData } = window.state.data.qrData;
             return `
                 <div class="bg-white p-8 rounded-xl shadow-lg">
                     <h3 class="text-2xl font-bold mb-6 text-yak-dark">ಗ್ಯಾಲರಿ ಮತ್ತು ದೇಣಿಗೆ QR ಕೋಡ್ ನಿರ್ವಹಣೆ</h3>
@@ -906,19 +1069,32 @@
                             <label class="block text-sm font-medium text-gray-700 mt-4">ದೇಣಿಗೆ ಒಟ್ಟು ಮೊತ್ತ (ಕೌಂಟರ್)</label>
                             <input type="number" id="admin-qr-donation" placeholder="ಪ್ರಸ್ತುತ ದೇಣಿಗೆ ಮೊತ್ತ" value="${donationTotal}" class="w-full p-2 border rounded-lg">
                             
-                            <!-- QR Image Management Field -->
+                            <!-- QR Image Upload Section -->
                             <div class="pt-4 border-t mt-4">
-                                <h5 class="text-lg font-bold mb-2">QR ಕೋಡ್ ಚಿತ್ರದ URL</h5>
-                                <div class="text-center mb-4 p-2 border border-gray-300 rounded-lg">
-                                    <h6 class="text-sm font-semibold mb-1">ಪ್ರಸ್ತುತ ಚಿತ್ರ:</h6>
-                                    <img src="${window.state.data.qrData.qrImageUrl}" 
+                                <h5 class="text-lg font-bold mb-4">QR ಕೋಡ್ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (300KB ಮಿತಿ)</h5>
+                                
+                                <div class="text-center mb-4 p-4 border border-gray-300 rounded-lg">
+                                    <h6 class="text-sm font-semibold mb-2">ಪ್ರಸ್ತುತ ಚಿತ್ರ:</h6>
+                                    <!-- Use the state data for preview on load -->
+                                    <img id="admin-qr-preview" 
+                                         src="${qrImageData || DEFAULT_QR_IMAGE_DATA}" 
                                          onerror="alertMessage('QR ಚಿತ್ರದ ನಿರ್ವಾಹಕ ಪೂರ್ವವೀಕ್ಷಣೆ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/100x100/A0A0A0/000000?text=QR+Missing';" 
                                          alt="Current QR Code" class="w-32 h-32 object-contain mx-auto rounded-lg border-2 border-yak-dark">
-                                    <p class="text-xs text-gray-500 mt-2 truncate">${window.state.data.qrData.qrImageUrl || 'QR ಚಿತ್ರದ URL ಹೊಂದಿಸಲಾಗಿಲ್ಲ'}</p>
+                                    <p class="text-xs text-gray-500 mt-2 truncate">${qrImageData.length > 50 ? 'Base64 Data URI' : qrImageData}</p>
                                 </div>
-                                <input type="url" id="admin-qr-image-url" placeholder="ಹೊಸ QR ಕೋಡ್ ಚಿತ್ರದ URL ಅನ್ನು ನಮೂದಿಸಿ (ಅಳಿಸಲು ಖಾಲಿ ಬಿಡಿ)" value="${window.state.data.qrData.qrImageUrl}" class="w-full p-2 border rounded-lg">
+                                
+                                <div class="file-input-container">
+                                    <input type="file" id="admin-qr-image-upload" accept="image/*" onchange="handleFileSelectAndConvert(event);" class="hidden-file-input">
+                                    <label for="admin-qr-image-upload" class="custom-file-upload">
+                                        ಚಿತ್ರವನ್ನು ಆರಿಸಿ (Choose Image)
+                                    </label>
+                                    <p class="text-xs text-gray-500 mt-2">QR ಚಿತ್ರವನ್ನು ಬದಲಾಯಿಸಲು ಹೊಸ ಫೈಲ್ ಆರಿಸಿ.</p>
+                                </div>
+                                
+                                <!-- HIDDEN INPUT: Stores the Base64 data to be saved to Firestore. -->
+                                <input type="hidden" id="admin-qr-base64-data" value="${qrImageData || DEFAULT_QR_IMAGE_DATA}">
                             </div>
-                            <!-- End QR Image Management Field -->
+                            <!-- End QR Image Upload Section -->
 
                             <button type="submit" class="w-full bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark">ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಉಳಿಸಿ</button>
                         </form>
@@ -927,11 +1103,37 @@
 
                     <!-- Gallery Add Form -->
                     <div class="mb-8 border p-6 rounded-xl bg-gray-50">
-                        <h4 class="text-xl font-bold mb-4">ಗ್ಯಾಲರಿಗೆ ಫೋಟೋ/ವಿಡಿಯೋ (URL) ಸೇರಿಸಿ</h4>
-                        <div class="flex space-x-3">
-                            <input type="url" id="admin-gallery-url" placeholder="ಚಿತ್ರ ಅಥವಾ YouTube ವಿಡಿಯೋ URL" class="flex-1 p-2 border rounded-lg">
-                            <button onclick="addGalleryItem();" class="bg-green-600 text-white p-2 px-4 rounded-xl font-semibold hover:bg-green-700">ಸೇರಿಸಿ</button>
+                        <h4 class="text-xl font-bold mb-4">ಗ್ಯಾಲರಿಗೆ ಹೊಸ ಐಟಂ ಸೇರಿಸಿ</h4>
+                        <p class="text-sm text-gray-600 mb-4">ಚಿತ್ರಗಳನ್ನು ನೇರವಾಗಿ ಸಾಧನದಿಂದ ಅಥವಾ ವೀಡಿಯೊಗಳನ್ನು URL ಮೂಲಕ ಸೇರಿಸಿ.</p>
+                        
+                        <!-- Image Upload (File Input) -->
+                        <div class="mb-4 p-4 border border-yak-primary rounded-lg">
+                            <h5 class="font-semibold mb-2">1. ಸ್ಥಳೀಯ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (Local Image - 500KB ಮಿತಿ)</h5>
+                            <div class="file-input-container">
+                                <input type="file" id="admin-gallery-file-upload" accept="image/*" onchange="handleGalleryFileSelectAndConvert(event);" class="hidden-file-input">
+                                <label for="admin-gallery-file-upload" class="custom-file-upload bg-yak-primary text-white hover:bg-yak-dark">
+                                    ಚಿತ್ರ ಫೈಲ್ ಆರಿಸಿ (.jpg, .png)
+                                </label>
+                            </div>
+                             <!-- HIDDEN INPUT: Stores the Base64 data -->
+                            <input type="hidden" id="admin-gallery-base64-data" value="">
                         </div>
+
+                        <div class="relative flex items-center justify-center my-4">
+                            <div class="h-px bg-gray-300 w-full"></div>
+                            <span class="absolute bg-gray-50 px-3 text-gray-500 text-sm">ಅಥವಾ (OR)</span>
+                            <div class="h-px bg-gray-300 w-full"></div>
+                        </div>
+
+                        <!-- Video URL Input -->
+                        <div class="p-4 border border-gray-400 rounded-lg">
+                            <h5 class="font-semibold mb-2">2. YouTube ವಿಡಿಯೋ URL ಸೇರಿಸಿ</h5>
+                            <input type="url" id="admin-gallery-url" placeholder="YouTube ವಿಡಿಯೋ ಲಿಂಕ್" class="w-full p-2 border rounded-lg focus:border-blue-500">
+                        </div>
+
+                        <button onclick="addGalleryItem();" class="w-full bg-green-600 text-white p-3 mt-4 rounded-xl font-semibold hover:bg-green-700">
+                            ಗ್ಯಾಲರಿಗೆ ಸೇರಿಸಿ
+                        </button>
                     </div>
 
                     <!-- Gallery List -->
@@ -940,8 +1142,8 @@
                         ${window.state.data.gallery.map(item => `
                             <div class="flex justify-between items-center p-3 bg-white border rounded-lg shadow-sm">
                                 <div class="truncate max-w-md">
-                                    <p class="font-semibold">${item.type === 'video' ? 'ವಿಡಿಯೋ' : 'ಚಿತ್ರ'}</p>
-                                    <p class="text-sm text-gray-500 truncate">${item.url}</p>
+                                    <p class="font-semibold">${item.type === 'video' ? 'ವಿಡಿಯೋ (URL)' : 'ಚಿತ್ರ (Local/Base64)'}</p>
+                                    <p class="text-sm text-gray-500 truncate">${item.url.length > 100 ? item.url.substring(0, 100) + '...' : item.url}</p>
                                 </div>
                                 <button onclick="deleteGalleryItem('${item.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600 flex-shrink-0">ತೆಗೆದುಹಾಕಿ</button>
                             </div>
