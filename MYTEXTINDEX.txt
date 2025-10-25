@@ -114,7 +114,16 @@
 
         // Global Variables MUST BE USED
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-yakshagana-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { /* Mock config */ };
+       const firebaseConfig = {
+  apiKey: "AIzaSyC8vMaKYBeZ93LKBcBNOjdqbsgxCJV9MyU",
+  authDomain: "yaksha-admin.firebaseapp.com",
+  projectId: "yaksha-admin",
+  storageBucket: "yaksha-admin.firebasestorage.app",
+  messagingSenderId: "480699199925",
+  appId: "1:480699199925:web:3a2556ea2db2eff68c29fc",
+  measurementId: "G-VYXM03K87H"
+};
+
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         let app, db, auth;
