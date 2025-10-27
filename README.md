@@ -1,1083 +1,385 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="kn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ, ಮುಳ್ಳೇರಿಯಾ - ಕಾಸರಗೋಡು</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter font -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f9fc;
-        }
-        .section-header {
-            border-left: 5px solid #ff7a00; /* Yakshagana orange/gold accent */
-        }
-        .file-input-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        /* Custom styling to make the file input look like a button */
-        .custom-file-upload {
-            border: 2px solid #ff7a00;
-            display: inline-block;
-            padding: 8px 12px;
-            cursor: pointer;
-            background-color: #fff;
-            color: #ff7a00;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .custom-file-upload:hover {
-            background-color: #ff7a00;
-            color: white;
-        }
-        .hidden-file-input {
-            width: 0.1px;
-            height: 0.1px;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-            z-index: -1;
-        }
-    </style>
-    <!-- Configure Tailwind for custom colors (Yakshagana theme) -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'yak-primary': '#ff7a00',
-                        'yak-dark': '#3c0000',
-                    }
-                }
-            }
-        }
-    </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ, ಮುಲ್ಲೇರಿಯಾ, ಕasasragod</title>
+  <style>
+    :root{--red:#8b0000;--gold:#d4a017;--bg:#fff;--muted:#666}
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;color:#111;background:var(--bg)}
+    header{background:linear-gradient(90deg,var(--red),#b00000);color:var(--gold);padding:20px;text-align:center;border-bottom:6px solid var(--gold)}
+    header h1{margin:0;font-size:22px}
+    .container{max-width:1100px;margin:18px auto;padding:12px}
+    .card{background:#fff;border:1px solid #efe7dc;padding:14px;margin:12px 0;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.05)}
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
+    img.responsive{max-width:100%;height:auto;border-radius:8px;border:4px solid #fff}
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+    .video-list iframe{width:100%;height:220px;border-radius:8px}
+    .admin-btn{position:fixed;right:18px;bottom:18px;background:var(--red);color:var(--gold);padding:12px 16px;border-radius:999px;border:2px solid var(--gold);z-index:9999;cursor:pointer}
+    .admin-modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:flex-start;justify-content:center;padding:22px;z-index:10000}
+    .admin-box{background:#fff;border-radius:10px;padding:16px;width:98%;max-width:1100px;max-height:92vh;overflow:auto;border:6px solid var(--gold)}
+    .admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    label{display:block;margin-top:8px;font-weight:700;color:var(--red)}
+    input,textarea,button,select{width:100%;padding:8px;margin-top:6px;border-radius:8px;border:1px solid #ddd}
+    .btn-gold{background:var(--gold);border:none;padding:10px;border-radius:8px;color:#111;font-weight:700;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    footer{padding:14px;text-align:center;color:var(--muted);border-top:1px solid #f2e9df;margin-top:18px}
+    .list-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid #f5f0ec}
+  </style>
 </head>
-<body class="text-gray-800">
+<body>
+  <header>
+    <h1>ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ, ಮುಲ್ಲೇರಿಯಾ, ಕಾಸರಗೋಡು</h1>
+    <div class="small">Thenk Thittu ಆಧಾರಿತ ಯಕ್ಷಗಾನ ತರಗತಿ</div>
+  </header>  <div class="container">
+    <div class="grid">
+      <main>
+        <section class="card center">
+          <h2 id="siteTitle">ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ</h2>
+          <div id="guruArea" class="center card" style="padding:10px">
+            <img id="guruPhoto" class="responsive" src="" alt="ಗುರು ಫೋಟೋ" style="display:none">
+            <div id="guruPlaceholder">ಗುರು ಫೋಟೋ ಇಲ್ಲಿದೆ (ಅಡ್ಮಿನ್ ಮೂಲಕ URL ಸೇರಿಸಿ)</div>
+            <h3 id="guruName">ಶುಬ್ರಾಯ ಪದಕನ್ನಯ್ಯ, ಬಾಯಾರು</h3>
+            <p id="guruDesc">ಗುರು ವಿವರ ಇಲ್ಲಿದೆ — ಅಡ್ಮಿನ್ ಮೂಲಕ ಸಂಖ್ಯೆಯನ್ನು ಸಿವಿ ಮಾಡಿ.</p>
+          </div>
+        </section><section class="card">
+      <h2>ವರ್ಗದ ಸಮಯ</h2>
+      <p class="small">ಪ್ರತಿ ಭಾನುವಾರ — <strong>1:35 PM</strong> ರಿಂದ <strong>3:45 PM</strong></p>
+    </section>
 
-    <!-- Main Application Container -->
-    <div id="app" class="min-h-screen">
-        <!-- Content will be rendered here -->
-        <div class="p-6 text-center text-lg text-gray-500">
-            ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ... ದಯವಿಟ್ಟು ಕಾಯಿರಿ. (Loading data... Please wait.)
+    <section class="card">
+      <h2>ಪ್ರವೇಶ ಫಾರ್ಮ್</h2>
+      <p class="small">ಫಾರ್ಮ್ ಮಾಹಿತಿಯನ್ನು WhatsApp (QR) ಮೂಲಕ ಕಳುಹಿಸಿ</p>
+      <form id="admissionForm">
+        <label>ಹೆಸರು</label><input id="adm_name" required>
+        <label>ವಯಸ್ಸು</label><input id="adm_age" type="number">
+        <label>ಮೊಬೈಲ್</label><input id="adm_phone" inputmode="tel">
+        <label>ಸಂದೇಶ</label><textarea id="adm_msg"></textarea>
+        <button type="submit" class="btn-gold">WhatsApp ಮೂಲಕ ಸಲ್ಲಿಸಿ</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>ಗ್ಯಾಲರಿ</h2>
+      <div id="gallery" class="gallery-grid"></div>
+    </section>
+
+    <section class="card">
+      <h2>ವೀಡಿಯೊಗಳು</h2>
+      <div id="videos" class="video-list"></div>
+    </section>
+
+    <section class="card">
+      <h2>ಭವಿಷ್ಯದ ಕಾರ್ಯಕ್ರಮಗಳು</h2>
+      <div id="eventsList"></div>
+    </section>
+  </main>
+
+  <aside>
+    <section class="card">
+      <h2>ದಾನ</h2>
+      <div id="qrPlaceholder" class="card">QR ಇಲ್ಲಿದೆ (ಅಡ್ಮಿನ್ ಮೂಲಕ URL ಸೇರಿಸಿ)</div>
+      <form id="donationForm">
+        <label>ಹೆಸರು</label><input id="don_name">
+        <label>ಮೊತ್ತ (₹)</label><input id="don_amount" type="number">
+        <button type="submit" class="btn-gold">WhatsApp ಮೂಲಕ ಸಲ್ಲಿಸಿ</button>
+      </form>
+      <div style="margin-top:12px">
+        <p>ಸ್ವೀಕರಿಸಿದ ಮೊತ್ತ: <strong id="collected">₹0</strong></p>
+        <p>ದಾನದ ಗುರಿ: <strong id="donationGoal">₹0</strong></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>ಸಂಪರ್ಕ</h2>
+      <p>ಇಮೇಲ್: <a href="mailto:srikrishnab83@gmail.com">srikrishnab83@gmail.com</a></p>
+      <p>ಮೊಬೈಲ್: <a href="tel:+919148014768">+91 91480 14768</a></p>
+    </section>
+  </aside>
+</div>
+
+  </div><button id="adminOpen" class="admin-btn">Admin</button>
+
+  <footer>
+    © ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ — Mulleriya, Kasaragod
+  </footer>  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, setDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC8vMaKYBeZ93LKBcBNOjdqbsgxCJV9MyU",
+      authDomain: "yaksha-admin.firebaseapp.com",
+      projectId: "yaksha-admin",
+      storageBucket: "yaksha-admin.appspot.com",
+      messagingSenderId: "480699199925",
+      appId: "1:480699199925:web:3a2556ea2db2eff68c29fc",
+      measurementId: "G-VYXM03K87H"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // elements
+    const galleryEl = document.getElementById('gallery');
+    const videosEl = document.getElementById('videos');
+    const eventsEl = document.getElementById('eventsList');
+    const collectedEl = document.getElementById('collected');
+    const donationGoalEl = document.getElementById('donationGoal');
+    const guruImg = document.getElementById('guruPhoto');
+    const guruPlaceholder = document.getElementById('guruPlaceholder');
+    const qrPlaceholder = document.getElementById('qrPlaceholder');
+
+    // realtime listeners
+    (function setupRealtime(){
+      try{
+        const gq = query(collection(db,'gallery'), orderBy('createdAt','desc'));
+        onSnapshot(gq,(snap)=>{
+          galleryEl.innerHTML='';
+          snap.forEach(s=>{
+            const d = s.data();
+            const img = document.createElement('img'); img.className='responsive'; img.src=d.url; img.alt=d.caption||'gallery';
+            const wrap = document.createElement('div'); wrap.appendChild(img); galleryEl.appendChild(wrap);
+          });
+        });
+
+        const vq = query(collection(db,'videos'), orderBy('createdAt','desc'));
+        onSnapshot(vq,(snap)=>{
+          videosEl.innerHTML='';
+          snap.forEach(s=>{
+            const d = s.data();
+            if(d.url && d.url.includes('youtube')){
+              // convert to embed
+              let id = '';
+              try{ if(d.url.includes('watch')){ id = new URL(d.url).searchParams.get('v'); } if(!id && d.url.includes('youtu.be')){ id = d.url.split('/').pop(); } }catch(e){ id=''; }
+              if(id){ const iframe = document.createElement('iframe'); iframe.src = `https://www.youtube.com/embed/${id}`; iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; videosEl.appendChild(iframe); return; }
+            }
+            if(d.embed){ const div=document.createElement('div'); div.innerHTML=d.embed; videosEl.appendChild(div); }
+            else if(d.url){ const iframe = document.createElement('iframe'); iframe.src=d.url; iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; videosEl.appendChild(iframe); }
+          });
+        });
+
+        const eq = query(collection(db,'events'), orderBy('date','asc'));
+        onSnapshot(eq,(snap)=>{
+          eventsEl.innerHTML='';
+          snap.forEach(s=>{
+            const d = s.data();
+            const card = document.createElement('div'); card.className='card';
+            card.innerHTML = `<strong>${d.title||'ಶೀರ್ಷಿಕೆ ಇಲ್ಲ'}</strong><div class=small>${d.date||''}</div><div>${d.desc||''}</div>`;
+            eventsEl.appendChild(card);
+          });
+        });
+
+        const countersDoc = doc(db,'meta','counters');
+        onSnapshot(countersDoc,(snap)=>{
+          if(snap.exists()){
+            const dat = snap.data(); collectedEl.textContent = '₹'+(dat.collected||0); donationGoalEl.textContent = '₹'+(dat.donationGoal||0);
+          }
+        });
+
+        const guruDoc = doc(db,'meta','guru');
+        onSnapshot(guruDoc,(snap)=>{
+          if(snap.exists()){
+            const g = snap.data();
+            if(g.photoUrl){ guruImg.src = g.photoUrl; guruImg.style.display='block'; guruPlaceholder.style.display='none'; }
+            if(g.name) document.getElementById('guruName').textContent = g.name;
+            if(g.desc) document.getElementById('guruDesc').textContent = g.desc;
+          }
+        });
+
+        const qrDoc = doc(db,'meta','qr');
+        onSnapshot(qrDoc,(snap)=>{
+          if(snap.exists()){
+            const q = snap.data(); if(q.url){ qrPlaceholder.innerHTML = `<img src="${q.url}" class="responsive">`; }
+          }
+        });
+
+      }catch(err){ console.error('Realtime setup error',err); }
+    })();
+
+    // forms -> whatsapp
+    document.getElementById('admissionForm').addEventListener('submit',(e)=>{ e.preventDefault(); window.open('https://wa.me/qr/JGB3XSEHKWFDD1','_blank'); });
+    document.getElementById('donationForm').addEventListener('submit',(e)=>{ e.preventDefault(); window.open('https://wa.me/qr/JGB3XSEHKWFDD1','_blank'); });
+
+    // admin
+    document.getElementById('adminOpen').addEventListener('click',()=>{
+      const p = prompt('ಅಡ್ಮಿನ್ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ:'); if(p===null) return; if(p!=='admin123'){ alert('ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್'); return; }
+      openAdminModal();
+    });
+
+    function openAdminModal(){
+      // remove any existing modal first to avoid duplicate listeners or IDs
+      const existing = document.querySelector('.admin-modal'); if(existing) existing.remove();
+      // create overlay
+      const modal = document.createElement('div'); modal.className='admin-modal';
+      const box = document.createElement('div'); box.className='admin-box';
+      box.innerHTML = `
+        <h2>ಅಡ್ಮಿನ್ ಪ್ಯಾನೆಲ್</h2>
+        <div class="admin-grid">
+          <div>
+            <h3>ಗುರು ಫೋಟೋ (URL)</h3>
+            <label>ಗುರು ಫೋಟೋ URL</label><input id="guruUrl" placeholder="ಅನೇಕ URL (http://...)" />
+            <label>ಗುರು ಹೆಸರು</label><input id="guruNameInput" value="ಶುಬ್ರಾಯ ಪದಕನ್ನಯ್ಯ, ಬಾಯಾರು" />
+            <label>ಗುರು ವಿವರಣೆ</label><textarea id="guruDescInput">ಗುರು ವಿವರಣೆ ಇಲ್ಲಿ ಹಾಕಿ.</textarea><button id="saveGuru" class="btn-gold">ಸೇಫ್ (ಗುರು)</button>
+
+        <h3 style="margin-top:12px">ದಾನ QR (URL)</h3>
+        <label>QR ಚಿತ್ರ URL</label><input id="qrUrl" placeholder="QR ಚಿತ್ರ URL" />
+        <button id="saveQR" class="btn-gold">ಸೇಫ್ (QR)</button>
+
+        <h3 style="margin-top:12px">ಗ್ಯಾಲರಿ - ಚಿತ್ರ URL ಸೇರ್ಸು</h3>
+        <label>ಚಿತ್ರ URL</label><input id="galleryUrl" placeholder="ಚಿತ್ರ URL" />
+        <label>ಶೀರ್ಷಿಕೆ (ಐಚ್ಛಿಕ)</label><input id="galleryCaption" placeholder="ಶೀರ್ಷಿಕೆ (ಐಚ್ಛಿಕ)" />
+        <button id="addGalleryUrl" class="btn-gold">ಸೇರಿಸಿ (ಗ್ಯಾಲರಿ)</button>
+
+        <h3 style="margin-top:12px">ವೀಡಿಯೊ - URL ಅಥವಾ embed</h3>
+        <label>ವೀಡಿಯೊ URL ಅಥವಾ embed</label><input id="videoUrl" placeholder="YouTube link ಅಥವಾ embed HTML" />
+        <label>ವೀಡಿಯೊ ಶೀರ್ಷಿಕೆ (ಐಚ್ಛಿಕ)</label><input id="videoCaption" placeholder="ಶೀರ್ಷಿಕೆ (ಐಚ್ಛಿಕ)" />
+        <button id="addVideoUrl" class="btn-gold">ಸೇರಿಸಿ (ವೀಡಿಯೊ)</button>
+      </div>
+
+      <div>
+        <h3>ಕೌಂಟರ್ಸ್ (Collected, Goal)</h3>
+        <label>Collected (₹)</label><input id="counter_collected" type=number>
+        <label>Donation Goal (₹)</label><input id="counter_goal" type=number>
+        <button id="saveCounters" class="btn-gold">ಉಳಿಸಿ (ಕೌಂಟರ್ಸ್)</button>
+
+        <h3 style="margin-top:12px">ಕಾರ್ಯಕ್ರಮ ಸೇರಿಸಿ</h3>
+        <label>ಶೀರ್ಷಿಕೆ</label><input id="ev_title">
+        <label>ದಿನಾಂಕ (YYYY-MM-DD)</label><input id="ev_date">
+        <label>ವಿವರಣೆ</label><textarea id="ev_desc"></textarea>
+        <button id="addEvent" class="btn-gold">ಸೇರಿಸಿ (ಕಾರ್ಯಕ್ರಮ)</button>
+
+        <h3 style="margin-top:12px">ವಸ್ತುಗಳನ್ನು ನಿರ್ವಹಿಸು</h3>
+        <div id="adminLists"></div>
+
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="closeAdmin" class="btn-gold">ಮುಚ್ಚಿ</button>
+          <button id="refreshAdmin" class="btn-gold">ರಿಫ್ರೆಶ್</button>
         </div>
+      </div>
     </div>
-
-    <!-- ಕಸ್ಟಮ್ ಅಲರ್ಟ್/ಟೋಸ್ಟ್ ಬಾಕ್ಸ್ (Custom Alert/Toast Box) -->
-    <div id="custom-alert" class="fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 bg-green-600 opacity-0 z-50 pointer-events-none">
-        <!-- ಸಂದೇಶವು ಇಲ್ಲಿ ಪ್ರದರ್ಶನಗೊಳ್ಳುತ್ತದೆ -->
-    </div>
-
-    <!-- Global Alert Function (Must be outside module script for inline event handlers like onerror) -->
-    <script>
-        /**
-         * alert() ಬದಲಿಗೆ ಬಳಸಲು ಕಸ್ಟಮ್ ಟೋಸ್ಟ್ ಮೆಸೇಜ್ ಕಾರ್ಯ.
-         */
-        function alertMessage(message, isError = false) {
-            const alertBox = document.getElementById('custom-alert');
-            
-            console.log(`[ALERT] ${isError ? 'ERROR' : 'INFO'}: ${message}`); 
-            
-            alertBox.textContent = message;
-            
-            // ಬಣ್ಣ ಮತ್ತು ಶೈಲಿಗಳನ್ನು ನವೀಕರಿಸಿ
-            alertBox.classList.remove('bg-red-600', 'bg-green-600', 'opacity-0');
-            alertBox.classList.add('fixed', 'bottom-4', 'right-4', 'p-4', 'rounded-lg', 'shadow-xl', 'text-white', 'transition-opacity', 'duration-300', 'z-50', 'pointer-events-none');
-            alertBox.classList.add(isError ? 'bg-red-600' : 'bg-green-600');
-            
-            // ಗೋಚರತೆಯನ್ನು ಹೊಂದಿಸಿ
-            alertBox.style.opacity = 1;
-            
-            // 5 ಸೆಕೆಂಡುಗಳ ನಂತರ ಮರೆಮಾಡಿ
-            setTimeout(() => {
-                alertBox.style.opacity = 0;
-            }, 5000);
-        }
-        
-        // window ಗೆ ಅಟ್ಯಾಚ್ ಮಾಡುವ ಮೂಲಕ ಜಾಗತಿಕ ಲಭ್ಯತೆಯನ್ನು ಖಚಿತಪಡಿಸಿ
-        window.alertMessage = alertMessage;
-    </script>
-
-    <!-- Firebase Imports and Main Application Logic (Module Script) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // setLogLevel ಅನ್ನು ಫೈರ್‌ಸ್ಟೋರ್ ಇಂಪೋರ್ಟ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ
-        import { getFirestore, doc, setDoc, onSnapshot, collection, query, addDoc, deleteDoc, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Global Variables MUST BE USED
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-yakshagana-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { /* Mock config */ };
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let app, db, auth;
-        let userId = null;
-        
-        // IMPORTANT: The default image MUST be a publicly accessible URL or a Base64 string. 
-        // We'll use a placeholder as the old path might not be reliable.
-        const DEFAULT_QR_IMAGE_DATA = "https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code";
-
-
-        // Application State
-        window.state = {
-            isAdminLoggedIn: false,
-            activeSection: 'home',
-            loading: true,
-            data: {
-                guru: { 
-                    name: 'ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು', 
-                    bio: 'ಯಕ್ಷಗಾನದ ತೆಂಕುತಿಟ್ಟು ಮತ್ತು ಬಡಗುತಿಟ್ಟು ಎರಡರಲ್ಲೂ ಪರಿಣತಿ ಹೊಂದಿದ ಮಹಾಗುರು. ಕಳೆದ ಹಲವು ದಶಕಗಳಿಂದ ಕಲಾ ಸೇವೆಯಲ್ಲಿ ತೊಡಗಿದ್ದಾರೆ.', 
-                    image: 'https://placehold.co/150x150/000000/FFFFFF?text=GURU' 
-                },
-                students: [],
-                programs: [],
-                gallery: [],
-                qrData: {
-                    suggestedAmount: '500.00',
-                    collectionTotal: 0,
-                    donationTotal: 0,
-                    // Renamed from qrImageUrl to qrImageData to store the Base64 string
-                    qrImageData: DEFAULT_QR_IMAGE_DATA, 
-                },
-            },
-            adminEditStudent: null,
-            adminEditGuru: false,
-            adminEditProgram: null
-        };
-
-        const WHATSAPP_LINK = "https://wa.me/qr/JGB3XSEHKWFDD1";
-        const EMAIL_ID = "srikrishnab83@gmail.com";
-        const MOBILE_NUM = "9148014768";
-
-        // --- FILE TO BASE64 UTILITY ---
-        /**
-         * ಫೈಲ್ ಇನ್ಪುಟ್‌ನಿಂದ ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿದ ನಂತರ ಅದನ್ನು Base64 Data URI ಆಗಿ ಪರಿವರ್ತಿಸುತ್ತದೆ.
-         * ನಂತರ ಈ Base64 ಸ್ಟ್ರಿಂಗ್ ಅನ್ನು ಹಿಡನ್ ಇನ್ಪುಟ್ ಮತ್ತು ಪೂರ್ವವೀಕ್ಷಣೆ ಇಮೇಜ್‌ಗೆ ಹೊಂದಿಸುತ್ತದೆ.
-         */
-        window.handleFileSelectAndConvert = (event) => {
-            const file = event.target.files[0];
-            const previewElement = document.getElementById('admin-qr-preview');
-            // 'admin-qr-base64-data' ಇದು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಕಳುಹಿಸಬೇಕಾದ ಡೇಟಾವನ್ನು ಹಿಡಿದಿಡುತ್ತದೆ
-            const hiddenInputElement = document.getElementById('admin-qr-base64-data'); 
-            
-            if (file) {
-                // QR ಕೋಡ್‌ಗೆ 300KB ಉತ್ತಮ ಮಿತಿ. Firestore ಡಾಕ್ಯುಮೆಂಟ್ ಮಿತಿ 1MB.
-                if (file.size > 300 * 1024) { 
-                     window.alertMessage('ಚಿತ್ರದ ಗಾತ್ರವು 300KB ಗಿಂತ ಕಡಿಮೆಯಿರಬೇಕು (ದೊಡ್ಡ ಫೈಲ್‌ಗಳು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ).', true);
-                     event.target.value = ''; // Clear the input
-                     hiddenInputElement.value = '';
-                     previewElement.src = window.state.data.qrData.qrImageData;
-                     return;
-                }
-
-                const reader = new FileReader();
-                
-                reader.onloadend = () => {
-                    // reader.result is the Base64 data URI
-                    hiddenInputElement.value = reader.result;
-                    previewElement.src = reader.result;
-                    window.alertMessage('ಚಿತ್ರವನ್ನು ಪೂರ್ವವೀಕ್ಷಣೆಗಾಗಿ ಲೋಡ್ ಮಾಡಲಾಗಿದೆ. ಉಳಿಸಲು "ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಉಳಿಸಿ" ಒತ್ತಿರಿ.');
-                };
-                
-                reader.onerror = (error) => {
-                    console.error("Error reading file:", error);
-                    window.alertMessage('ಚಿತ್ರವನ್ನು ಓದುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                };
-                
-                reader.readAsDataURL(file); // Reads the file content as Base64 data URL
-            } else {
-                // Clear the hidden input if the file input is cleared
-                hiddenInputElement.value = window.state.data.qrData.qrImageData; 
-            }
-        };
-
-
-        // --- FIREBASE INITIALIZATION AND AUTHENTICATION ---
-        async function initFirebase() {
-            try {
-                if (Object.keys(firebaseConfig).length > 0) {
-                    app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    
-                    // ಡೀಬಗ್ ಲಾಗ್ ಮಟ್ಟವನ್ನು ಹೊಂದಿಸಿ
-                    setLogLevel('debug'); 
-
-                    auth = getAuth(app);
-
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    userId = auth.currentUser?.uid || 'anonymous';
-                    console.log("Firebase initialized. User ID:", userId);
-
-                    setupRealtimeListeners();
-                } else {
-                    console.error("Firebase config is missing. Using mock data.");
-                    window.state.loading = false;
-                    renderApp();
-                }
-            } catch (error) {
-                console.error("Error during Firebase setup or sign-in:", error);
-                // ಅನುಮತಿ ದೋಷದ ಬಗ್ಗೆ ಬಳಕೆದಾರರಿಗೆ ಸ್ಪಷ್ಟವಾಗಿ ತಿಳಿಸಿ.
-                let errorMessage = "ಫೈರ್‌ಬೇಸ್ ಪ್ರಾರಂಭಿಸುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.";
-                if (error.code === 'permission-denied' || error.message.includes('permission')) {
-                     errorMessage = "ಅನುಮತಿ ದೋಷ: ಡೇಟಾಬೇಸ್ ಸೆಕ್ಯುರಿಟಿ ರೂಲ್ಸ್‌ಗಳಿಂದ ಡೇಟಾವನ್ನು ಓದಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ.";
-                }
-                window.alertMessage(errorMessage, true);
-                document.getElementById('app').innerHTML = `<div class="p-8 text-center text-red-600">${errorMessage}</div>`;
-            }
-        }
-
-        // --- FIRESTORE UTILITIES ---
-        const getCollectionPath = (collectionName) => `/artifacts/${appId}/public/data/${collectionName}`;
-
-        function setupRealtimeListeners() {
-            // 1. Guru Data (single document)
-            const guruDocRef = doc(db, getCollectionPath('guru'), 'main');
-            onSnapshot(guruDocRef, (docSnap) => {
-                window.state.data.guru = docSnap.exists() ? docSnap.data() : window.state.data.guru;
-                window.state.loading = false;
-                renderApp();
-            }, (error) => console.error("Error fetching Guru:", error));
-
-            // 2. Students Collection
-            const studentsColRef = collection(db, getCollectionPath('students'));
-            onSnapshot(studentsColRef, (snapshot) => {
-                window.state.data.students = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                window.state.loading = false;
-                renderApp();
-            }, (error) => console.error("Error fetching Students:", error));
-
-            // 3. Programs Collection
-            const programsColRef = collection(db, getCollectionPath('programs'));
-            onSnapshot(programsColRef, (snapshot) => {
-                window.state.data.programs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                window.state.loading = false;
-                renderApp();
-            }, (error) => console.error("Error fetching Programs:", error));
-
-            // 4. Gallery Collection
-            const galleryColRef = collection(db, getCollectionPath('gallery'));
-            onSnapshot(galleryColRef, (snapshot) => {
-                window.state.data.gallery = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                window.state.loading = false;
-                renderApp();
-            }, (error) => console.error("Error fetching Gallery:", error));
-
-             // 5. QR Data Config - Updated to fetch QR image Data
-            const configDocRef = doc(db, getCollectionPath('config'), 'payment');
-            onSnapshot(configDocRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    window.state.data.qrData.suggestedAmount = data.suggestedAmount || '500.00';
-                    window.state.data.qrData.collectionTotal = Number(data.collectionTotal) || 0;
-                    window.state.data.qrData.donationTotal = Number(data.donationTotal) || 0;
-                    // Fetch new QR Image Data (Base64 string or URL)
-                    window.state.data.qrData.qrImageData = data.qrImageData || DEFAULT_QR_IMAGE_DATA; 
-                }
-                renderApp();
-            }, (error) => console.error("Error fetching QR Data:", error));
-        }
-
-        // --- FORM SUBMISSION LOGIC (WhatsApp) ---
-
-        window.sendAdmissionForm = (event) => {
-            event.preventDefault();
-            
-            const name = document.getElementById('admission-student-name').value;
-            const age = document.getElementById('admission-age').value;
-            const contact = document.getElementById('admission-contact').value;
-            const guardian = document.getElementById('admission-guardian').value;
-            const address = document.getElementById('admission-address').value;
-
-            if (!name || !age || !contact || !guardian || !address) {
-                window.alertMessage('ದಯವಿಟ್ಟು ಪ್ರವೇಶ ಅರ್ಜಿಯ ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.', true);
-                return;
-            }
-
-            const message = `
-*ಯಕ್ಷಗಾನ ಪ್ರವೇಶ ಅರ್ಜಿ (ವೆಬ್‌ಸೈಟ್ ಮೂಲಕ)*
--------------------------------------
-*ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು:* ${name}
-*ವಯಸ್ಸು:* ${age}
-*ಸಂಪರ್ಕ ಸಂಖ್ಯೆ:* ${contact}
-*ಪೋಷಕರ ಹೆಸರು:* ${guardian}
-*ವಿಳಾಸ:* ${address}
--------------------------------------
-ದಯವಿಟ್ಟು ಈ ವಿದ್ಯಾರ್ಥಿಯ ಪ್ರವೇಶವನ್ನು ಪರಿಗಣಿಸಿ.
-            `.trim();
-            
-            openWhatsApp(message);
-        };
-
-        window.sendBookingForm = (event) => {
-            event.preventDefault();
-
-            const bookerName = document.getElementById('booking-booker-name').value;
-            const eventDate = document.getElementById('booking-event-date').value;
-            const eventLocation = document.getElementById('booking-event-location').value;
-            const contact = document.getElementById('booking-contact').value;
-            const programDetails = document.getElementById('booking-program-details').value;
-
-            if (!bookerName || !eventDate || !eventLocation || !contact || !programDetails) {
-                window.alertMessage('ದಯವಿಟ್ಟು ಬುಕಿಂಗ್ ಅರ್ಜಿಯ ಎಲ್ಲಾ ಕ್ಷೇತ್ರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.', true);
-                return;
-            }
-
-            const message = `
-*ಕಾರ್ಯಕ್ರಮ ಬುಕಿಂಗ್ ಅರ್ಜಿ (ವೆಬ್‌ಸೈಟ್ ಮೂಲಕ)*
--------------------------------------
-*ಬುಕ್ ಮಾಡುವವರ ಹೆಸರು:* ${bookerName}
-*ಸಂಪರ್ಕ ಸಂಖ್ಯೆ:* ${contact}
-*ಕಾರ್ಯಕ್ರಮದ ದಿನಾಂಕ:* ${eventDate}
-*ಕಾರ್ಯಕ್ರಮದ ಸ್ಥಳ:* ${eventLocation}
-*ಪ್ರಸಂಗ/ವಿವರಗಳು:* ${programDetails}
--------------------------------------
-ದಯವಿಟ್ಟು ಈ ಕಾರ್ಯಕ್ರಮ ಬುಕಿಂಗ್ ಅನ್ನು ದೃಢೀಕರಿಸಿ.
-            `.trim();
-
-            openWhatsApp(message);
-        };
-
-        function openWhatsApp(message) {
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`${WHATSAPP_LINK}&text=${encodedMessage}`, '_blank');
-            window.alertMessage('WhatsApp ಚಾಟ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ. ಸಂದೇಶವನ್ನು ಕಳುಹಿಸಲು ದಯವಿಟ್ಟು "Send" ಬಟನ್ ಒತ್ತಿರಿ.');
-        }
-
-        // --- ADMIN PANEL CRUD LOGIC ---
-
-        window.handleAdminLogin = async () => {
-            const passwordInput = document.getElementById('admin-password').value;
-            const messageElement = document.getElementById('login-message');
-            messageElement.textContent = '';
-
-            // Using hardcoded simple password for demonstration in this single-file app
-            if (passwordInput === 'admin123') {
-                window.state.isAdminLoggedIn = true;
-                window.state.activeSection = 'admin-dashboard';
-                renderApp();
-            } else {
-                messageElement.textContent = 'ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.';
-                messageElement.classList.add('text-red-500');
-                window.alertMessage('ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.', true);
-            }
-        };
-
-        // FIX: handleAdminLogout definition
-        window.handleAdminLogout = async () => {
-            try {
-                if (auth) {
-                    await signOut(auth);
-                }
-            } catch (error) {
-                console.error("Error signing out:", error);
-                window.alertMessage('ಲಾಗ್‌ಔಟ್ ಮಾಡುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-            }
-            window.state.isAdminLoggedIn = false;
-            window.state.activeSection = 'home';
-            renderApp();
-            window.alertMessage('ನೀವು ಯಶಸ್ವಿಯಾಗಿ ಲಾಗ್‌ಔಟ್ ಆಗಿದ್ದೀರಿ.');
-        };
-
-        window.saveGuruDetails = async () => {
-            if (!db || !window.state.data.guru) return;
-            const guruRef = doc(db, getCollectionPath('guru'), 'main');
-            const name = document.getElementById('admin-guru-name').value;
-            const bio = document.getElementById('admin-guru-bio').value;
-            const image = document.getElementById('admin-guru-image').value;
-            try {
-                await setDoc(guruRef, { name, bio, image });
-                window.state.adminEditGuru = false;
-                window.alertMessage('ಗುರುಗಳ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
-                renderApp();
-            } catch (e) {
-                console.error("Error saving Guru details: ", e);
-                if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-        
-        window.saveStudentDetails = async (isNew, id) => {
-            if (!db) return;
-            const studentsColRef = collection(db, getCollectionPath('students'));
-            const name = document.getElementById('admin-student-name').value;
-            const photo = document.getElementById('admin-student-photo').value;
-            const review = document.getElementById('admin-student-review').value;
-            
-            const data = { name, photo, review };
-
-            try {
-                if (isNew) {
-                    await addDoc(studentsColRef, data);
-                    window.alertMessage('ವಿದ್ಯಾರ್ಥಿ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
-                } else {
-                    const docRef = doc(db, studentsColRef.path, id);
-                    await setDoc(docRef, data);
-                    window.alertMessage('ವಿದ್ಯಾರ್ಥಿ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಸಂಪಾದಿಸಲಾಗಿದೆ.');
-                }
-                window.state.adminEditStudent = null;
-                renderApp();
-            } catch (e) {
-                console.error("Error saving student details: ", e);
-                if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-        
-        window.deleteStudent = async (id) => {
-            if (!db) return;
-            // Removed forbidden window.confirm() check. Deletion is now immediate.
-
-            const docRef = doc(db, getCollectionPath('students'), id);
-            try {
-                await deleteDoc(docRef);
-                window.alertMessage('ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಅಳಿಸಲಾಗಿದೆ.');
-                renderApp();
-            } catch (e) {
-                console.error("Error deleting student: ", e);
-                if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಅಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-        
-        window.saveProgramDetails = async (isNew, id) => {
-            if (!db) return;
-            const programsColRef = collection(db, getCollectionPath('programs'));
-            const title = document.getElementById('admin-program-title').value;
-            const details = document.getElementById('admin-program-details').value;
-            
-            const data = { title, details };
-
-            try {
-                if (isNew) {
-                    await addDoc(programsColRef, data);
-                    window.alertMessage('ಕಾರ್ಯಕ್ರಮ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
-                } else {
-                    const docRef = doc(db, programsColRef.path, id);
-                    await setDoc(docRef, data);
-                    window.alertMessage('ಕಾರ್ಯಕ್ರಮ ಮಾಹಿತಿ ಯಶಸ್ವಿಯಾಗಿ ಸಂಪಾದಿಸಲಾಗಿದೆ.');
-                }
-                window.state.adminEditProgram = null;
-                renderApp();
-            } catch (e) {
-                console.error("Error saving program details: ", e);
-                if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-        
-        window.deleteProgram = async (id) => {
-            if (!db) return;
-            // Removed forbidden window.confirm() check. Deletion is now immediate.
-
-            const docRef = doc(db, getCollectionPath('programs'), id);
-            try {
-                await deleteDoc(docRef);
-                window.alertMessage('ಕಾರ್ಯಕ್ರಮವನ್ನು ಅಳಿಸಲಾಗಿದೆ.');
-                renderApp();
-            } catch (e) {
-                console.error("Error deleting program: ", e);
-                if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಅಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-
-        // UPDATED: Now saves the Base64 data from the hidden input
-        window.saveQRCodeData = async () => {
-            if (!db) return;
-            const configRef = doc(db, getCollectionPath('config'), 'payment');
-            const suggestedAmount = document.getElementById('admin-qr-suggested').value;
-            const collectionTotal = Number(document.getElementById('admin-qr-collection').value);
-            const donationTotal = Number(document.getElementById('admin-qr-donation').value);
-            // Get the Base64 data from the hidden input
-            const qrImageData = document.getElementById('admin-qr-base64-data').value; 
-
-            try {
-                // Save qrImageData (which is Base64 or the fallback URL)
-                await setDoc(configRef, { suggestedAmount, collectionTotal, donationTotal, qrImageData });
-                window.alertMessage('QR/ದೇಣಿಗೆ ಡೇಟಾ ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.');
-                // Update state immediately for next render
-                window.state.data.qrData.qrImageData = qrImageData; 
-                renderApp();
-            } catch (e) {
-                console.error("Error saving QR data: ", e);
-                // Check for Firebase permission error and provide a better message
-                if (e.code && e.code.includes('permission-denied')) {
-                    window.alertMessage('QR ಕೋಡ್ ಉಳಿಸಲು ಅನುಮತಿ ನಿರಾಕರಿಸಲಾಗಿದೆ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('QR ಕೋಡ್ ಉಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ. ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                }
-            }
-        };
-
-        window.addGalleryItem = async () => {
-            if (!db) return;
-            const galleryColRef = collection(db, getCollectionPath('gallery'));
-            const url = document.getElementById('admin-gallery-url').value;
-            if (!url) {
-                window.alertMessage('ದಯವಿಟ್ಟು ಚಿತ್ರ ಅಥವಾ ವಿಡಿಯೋ URL ಅನ್ನು ನಮೂದಿಸಿ.', true);
-                return;
-            }
-
-            let type = 'image';
-            if (url.includes('youtube.com') || url.includes('youtu.be')) {
-                type = 'video';
-            }
-
-            try {
-                await addDoc(galleryColRef, { url, type });
-                document.getElementById('admin-gallery-url').value = '';
-                window.alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.');
-                renderApp();
-            } catch (e) {
-                console.error("Error adding gallery item: ", e);
-                 if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಮಾಹಿತಿ ಉಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಐಟಂ ಸೇರಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-
-        window.deleteGalleryItem = async (id) => {
-            if (!db) return;
-            // Removed forbidden window.confirm() check. Deletion is now immediate.
-
-            const docRef = doc(db, getCollectionPath('gallery'), id);
-            try {
-                await deleteDoc(docRef);
-                window.alertMessage('ಗ್ಯಾಲರಿ ಐಟಂ ಅಳಿಸಲಾಗಿದೆ.');
-                renderApp();
-            } catch (e) {
-                console.error("Error deleting gallery item: ", e);
-                if (e.code && e.code.includes('permission-denied')) {
-                     window.alertMessage('ಅಳಿಸಲು ಅನುಮತಿ ಇಲ್ಲ (Permission Denied). ದಯವಿಟ್ಟು ಕನ್ಸೋಲ್ ಪರಿಶೀಲಿಸಿ.', true);
-                } else {
-                    window.alertMessage('ಅಳಿಸುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ.', true);
-                }
-            }
-        };
-
-        // --- UI RENDER FUNCTIONS ---
-
-        function createPublicView() {
-            // NOTE: Using qrImageData instead of qrImageUrl
-            const { guru, students, programs, gallery, qrData } = window.state.data;
-            
-            // Generate Students HTML
-            const studentsHtml = students.map(s => `
-                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
-                    <img src="${s.photo}" onerror="alertMessage('ಗುರುಗಳ ಚಿತ್ರ ಲೋಡ್ ಆಗುತ್ತಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/100x100/A0A0A0/000000?text=S';" alt="${s.name} Photo" class="w-24 h-24 object-cover rounded-full mx-auto mb-4 border-4 border-yak-primary">
-                    <h4 class="text-xl font-semibold text-yak-dark mb-2">${s.name}</h4>
-                    <p class="italic text-gray-600">" ${s.review} "</p>
-                </div>
-            `).join('');
-
-            // Generate Programs HTML
-            const programsHtml = programs.map(p => `
-                <div class="bg-white p-5 rounded-xl shadow-md border-t-4 border-yak-primary">
-                    <h4 class="text-xl font-bold text-yak-dark mb-1">${p.title}</h4>
-                    <p class="text-gray-600">${p.details}</p>
-                </div>
-            `).join('');
-
-            // Generate Gallery HTML
-            const galleryHtml = gallery.map(item => {
-                if (item.type === 'video') {
-                    let videoId = item.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&]+)/);
-                    if (videoId && videoId[1]) {
-                        return `<div class="w-full h-48 md:h-64 rounded-xl overflow-hidden shadow-lg">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                </div>`;
-                    }
-                }
-                return `<img src="${item.url}" onerror="alertMessage('ಗ್ಯಾಲರಿ ಚಿತ್ರ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/400x250/555/FFF?text=Image';" alt="Gallery Image" class="w-full h-48 object-cover rounded-xl shadow-lg">`;
-            }).join('');
-
-
-            return `
-                <!-- Navigation -->
-                <header class="bg-yak-dark text-white shadow-xl sticky top-0 z-10">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-                        <!-- ಶೀರ್ಷಿಕೆ ಈಗ ಸಂಪೂರ್ಣವಾಗಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತದೆ -->
-                        <h1 class="text-xl md:text-2xl font-extrabold text-yak-primary mr-4">
-                            ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ, ಮುಳ್ಳೇರಿಯಾ - ಕಾಸರಗೋಡು
-                        </h1>
-                        <nav class="hidden md:flex space-x-6 text-lg">
-                            <a href="#home" onclick="window.state.activeSection='#home'; renderApp();" class="hover:text-yak-primary transition duration-200">ಮನೆ</a>
-                            <a href="#timing" onclick="window.state.activeSection='#timing'; renderApp();" class="hover:text-yak-primary transition duration-200">ಸಮಯ</a>
-                            <a href="#guru" onclick="window.state.activeSection='#guru'; renderApp();" class="hover:text-yak-primary transition duration-200">ಗುರುಗಳು</a>
-                            <a href="#forms" onclick="window.state.activeSection='#forms'; renderApp();" class="hover:text-yak-primary transition duration-200">ಅರ್ಜಿಗಳು</a>
-                            <a href="#contact" onclick="window.state.activeSection='#contact'; renderApp();" class="hover:text-yak-primary transition duration-200">ಸಂಪರ್ಕ</a>
-                            <button onclick="window.state.activeSection='admin-login'; renderApp();" class="text-gray-300 hover:text-white transition duration-200 text-sm">ನಿರ್ವಾಹಕ ಲಾಗಿನ್</button>
-                        </nav>
-                        
-                        <!-- Simple mobile menu placeholder -->
-                        <div class="md:hidden text-yak-primary text-xl">☰</div>
-                    </div>
-                </header>
-
-                <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
-
-                    <!-- Title & Introduction -->
-                    <section id="home" class="text-center">
-                        <h2 class="text-4xl sm:text-5xl font-extrabold mb-4 text-yak-dark">ಯಕ್ಷಗಾನ: ಕಲೆ, ಸಂಸ್ಕೃತಿ ಮತ್ತು ಬದುಕು</h2>
-                        <h3 class="text-xl text-gray-700 font-semibold mb-6">ಕಾಸರಗೋಡು, ಮುಳ್ಳೇರಿಯಾ</h3>
-                        <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                            ಯಕ್ಷಗಾನವು ಕರ್ನಾಟಕದ ಕರಾವಳಿಯ ಒಂದು ವಿಶಿಷ್ಟ ಕಲಾ ಪ್ರಕಾರ. ನಮ್ಮ ಕೇಂದ್ರವು ಈ ಅದ್ಭುತ ಕಲೆಯನ್ನು ಮುಂಬರುವ ಪೀಳಿಗೆಗೆ ಕಲಿಸಲು ಮತ್ತು ಅದರ ಶ್ರೀಮಂತ ಪರಂಪರೆಯನ್ನು ಉಳಿಸಲು ಸಮರ್ಪಿಸಲಾಗಿದೆ. ಇಲ್ಲಿ ನೀವು ತೆಂಕು ಮತ್ತು ಬಡಗು ತಿಟ್ಟು ಶೈಲಿಗಳಲ್ಲಿ ಆಳವಾದ ತರಬೇತಿಯನ್ನು ಪಡೆಯಬಹುದು.
-                        </p>
-                    </section>
-
-                    <!-- Class Timing -->
-                    <section id="timing" class="p-6 bg-yak-primary text-white rounded-xl shadow-2xl text-center">
-                        <h3 class="text-3xl font-bold mb-2">ತರಗತಿಗಳ ಸಮಯ</h3>
-                        <p class="text-xl font-semibold">ಪ್ರತಿ ರವಿವಾರ: ಮಧ್ಯಾಹ್ನ 1:45 ರಿಂದ ಸಂಜೆ 3:45 ರವರೆಗೆ</p>
-                    </section>
-
-                    <!-- About Guru -->
-                    <section id="guru" class="p-8 bg-white rounded-xl shadow-2xl">
-                        <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಗುರುಗಳ ಪರಿಚಯ</h3>
-                        <div class="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
-                            <img src="${guru.image}" 
-                                onerror="alertMessage('ಗುರುಗಳ ಚಿತ್ರ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/200x200/555/FFF?text=Guru';" 
-                                alt="${guru.name} Photo" class="w-40 h-40 object-cover rounded-full shadow-lg border-4 border-yak-primary flex-shrink-0">
-                            <div>
-                                <h4 class="text-2xl font-extrabold text-yak-primary mb-3">${guru.name}</h4>
-                                <p class="text-gray-700 leading-relaxed">${guru.bio}</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Successful Students -->
-                    <section id="students">
-                        <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಯಶಸ್ವಿ ವಿದ್ಯಾರ್ಥಿಗಳು (ವಿಮರ್ಶೆಗಳು)</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            ${studentsHtml || '<p class="col-span-4 text-center text-gray-500">ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿದೆ。</p>'}
-                        </div>
-                    </section>
-
-                    <!-- Gallery -->
-                    <section id="gallery" class="bg-white p-8 rounded-xl shadow-2xl">
-                        <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಛಾಯಾಚಿತ್ರ ಮತ್ತು ವಿಡಿಯೋ ಗ್ಯಾಲರಿ</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            ${galleryHtml || '<p class="col-span-3 text-center text-gray-500">ಗ್ಯಾಲರಿ ಐಟಂಗಳು ಶೀಘ್ರದಲ್ಲೇ ಇಲ್ಲಿ ಲಭ್ಯವಾಗಲಿವೆ。</p>'}
-                        </div>
-                    </section>
-
-                    <!-- Programs -->
-                    <section id="programs">
-                        <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ನಮ್ಮ ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳು</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                             ${programsHtml || '<p class="col-span-2 text-gray-500 text-center">ಮುಂದಿನ ಕಾರ್ಯಕ್ರಮಗಳ ಮಾಹಿತಿ ಶೀಘ್ರದಲ್ಲೇ ಪ್ರಕಟವಾಗಲಿದೆ。</p>'}
-                        </div>
-                    </section>
-                    
-                    <!-- Forms and Programs (WhatsApp Submission) -->
-                    <section id="forms" class="p-8 bg-gray-100 rounded-xl shadow-inner">
-                         <h3 class="section-header text-3xl font-bold mb-8 pl-4 text-yak-dark">ಪ್ರವೇಶ ಮತ್ತು ಕಾರ್ಯಕ್ರಮ ಬುಕಿಂಗ್ (WhatsApp ಮೂಲಕ)</h3>
-
-                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                             <!-- Admission Form -->
-                             <div class="bg-white p-6 rounded-xl shadow-lg border-4 border-yak-primary">
-                                 <h4 class="text-2xl font-bold mb-4 text-yak-dark text-center">ಪ್ರವೇಶ ಅರ್ಜಿ</h4>
-                                 <form onsubmit="sendAdmissionForm(event);" class="space-y-3">
-                                     <input type="text" id="admission-student-name" placeholder="ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು" required class="w-full p-2 border rounded-lg focus:border-yak-primary">
-                                     <input type="number" id="admission-age" placeholder="ವಯಸ್ಸು" required class="w-full p-2 border rounded-lg focus:border-yak-primary">
-                                     <input type="tel" id="admission-contact" placeholder="ಸಂಪರ್ಕ ಸಂಖ್ಯೆ (ಉದಾ: 91XXXXXXXX)" required pattern="[0-9]{10}" class="w-full p-2 border rounded-lg focus:border-yak-primary">
-                                     <input type="text" id="admission-guardian" placeholder="ಪೋಷಕರ ಹೆಸರು" required class="w-full p-2 border rounded-lg focus:border-yak-primary">
-                                     <textarea id="admission-address" placeholder="ವಿಳಾಸ" rows="2" required class="w-full p-2 border rounded-lg focus:border-yak-primary"></textarea>
-                                     <button type="submit" class="w-full bg-green-500 text-white p-3 rounded-xl font-semibold hover:bg-green-600 transition duration-300">
-                                         WhatsApp ಮೂಲಕ ವಿವರಗಳನ್ನು ಕಳುಹಿಸಿ
-                                     </button>
-                                 </form>
-                             </div>
-
-                             <!-- Programme Booking Form -->
-                             <div class="bg-white p-6 rounded-xl shadow-lg border-4 border-yak-dark">
-                                 <h4 class="text-2xl font-bold mb-4 text-yak-dark text-center">ಕಾರ್ಯಕ್ರಮ ಬುಕಿಂಗ್ ಅರ್ಜಿ</h4>
-                                 <form onsubmit="sendBookingForm(event);" class="space-y-3">
-                                     <input type="text" id="booking-booker-name" placeholder="ಬುಕ್ ಮಾಡುವವರ ಹೆಸರು" required class="w-full p-2 border rounded-lg focus:border-yak-dark">
-                                     <input type="tel" id="booking-contact" placeholder="ಸಂಪರ್ಕ ಸಂಖ್ಯೆ (ಉದಾ: 91XXXXXXXX)" required pattern="[0-9]{10}" class="w-full p-2 border rounded-lg focus:border-yak-dark">
-                                     <input type="date" id="booking-event-date" required class="w-full p-2 border rounded-lg focus:border-yak-dark">
-                                     <input type="text" id="booking-event-location" placeholder="ಕಾರ್ಯಕ್ರಮದ ಸ್ಥಳ (Place)" required class="w-full p-2 border rounded-lg focus:border-yak-dark">
-                                     <textarea id="booking-program-details" placeholder="ಪ್ರಸಂಗ ಮತ್ತು ಇತರೆ ವಿವರಗಳು" rows="2" required class="w-full p-2 border rounded-lg focus:border-yak-dark"></textarea>
-                                     <button type="submit" class="w-full bg-green-500 text-white p-3 rounded-xl font-semibold hover:bg-green-600 transition duration-300">
-                                         WhatsApp ಮೂಲಕ ವಿವರಗಳನ್ನು ಕಳುಹಿಸಿ
-                                     </button>
-                                 </form>
-                             </div>
-                         </div>
-                    </section>
-
-                    <!-- QR Code and Counters -->
-                    <section class="p-8 bg-yak-dark text-white rounded-xl shadow-2xl space-y-8">
-                        <h3 class="text-3xl font-bold text-center">ದೇಣಿಗೆ ನೀಡಿ, ಕಲೆಗೆ ಬೆಂಬಲಿಸಿ (Support the Art)</h3>
-                        
-                        <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-12">
-                            <div class="bg-white p-4 rounded-lg shadow-inner flex-shrink-0">
-                                <!-- UPDATED: Using qrImageData (Base64 or URL) from state -->
-                                <img id="public-qr-preview" src="${qrData.qrImageData}" 
-                                     onerror="alertMessage('QR ಕೋಡ್ ಚಿತ್ರ ಲೋಡ್ ಆಗುತ್ತಿಲ್ಲ. ದಯವಿಟ್ಟು ನಿರ್ವಾಹಕ ಫಲಕದಲ್ಲಿ URL/ಚಿತ್ರವನ್ನು ಪರಿಶೀಲಿಸಿ.', true); this.onerror=null;this.src='https://placehold.co/200x200/FF7A00/FFFFFF?text=QR+Code+Missing';" 
-                                     alt="QR Code for Payment" class="w-48 h-48 rounded-lg">
-                            </div>
-                            <div class="text-center md:text-left">
-                                <p class="text-xl font-semibold mb-2">ಶಿಫಾರಸು ಮಾಡಿದ ದೇಣಿಗೆ ಮೊತ್ತ:</p>
-                                <div class="bg-yak-primary text-white p-4 rounded-xl text-4xl font-extrabold shadow-lg mb-4">
-                                    ₹ ${qrData.suggestedAmount}
-                                </div>
-                                <p class="mt-4 text-gray-300">
-                                    <span class="font-bold text-yellow-300">ಪಾವತಿ ಸೂಚನೆ:</span> QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ನಂತರ, ದೇಣಿಗೆ ಅಥವಾ ಕಲೆಕ್ಷನ್ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ.
-                                </p>
-                            </div>
-                        </div>
-                        
-                        <!-- Running Counters -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-gray-700">
-                            <div class="bg-gray-700 p-6 rounded-xl text-center shadow-lg">
-                                <p class="text-2xl font-bold mb-2 text-yak-primary">ಕಲೆಕ್ಷನ್ ಒಟ್ಟು ಮೊತ್ತ</p>
-                                <div class="text-4xl font-extrabold">₹ ${qrData.collectionTotal.toLocaleString('en-IN')}</div>
-                            </div>
-                             <div class="bg-gray-700 p-6 rounded-xl text-center shadow-lg">
-                                <p class="text-2xl font-bold mb-2 text-yak-primary">ದೇಣಿಗೆ ಒಟ್ಟು ಮೊತ್ತ</p>
-                                <div class="text-4xl font-extrabold">₹ ${qrData.donationTotal.toLocaleString('en-IN')}</div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Contact Info -->
-                    <section id="contact" class="text-center p-8 bg-white rounded-xl shadow-2xl">
-                        <h3 class="section-header text-3xl font-bold mb-6 pl-4 inline-block text-yak-dark">ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ</h3>
-                        <div class="space-y-3 text-lg font-medium">
-                            <p><strong>ದೂರವಾಣಿ ಸಂಖ್ಯೆ:</strong> <a href="tel:+91${MOBILE_NUM}" class="text-yak-primary hover:underline">${MOBILE_NUM}</a></p>
-                            <p><strong>ಇಮೇಲ್:</strong> <a href="mailto:${EMAIL_ID}" class="text-yak-primary hover:underline">${EMAIL_ID}</a></p>
-                            <p><strong>WhatsApp:</strong> <a href="${WHATSAPP_LINK}" target="_blank" class="text-green-600 hover:underline">ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ</a></p>
-                        </div>
-                    </section>
-                </main>
-
-                <footer class="bg-gray-800 text-white p-6 text-center">
-                    <p>&copy; ${new Date().getFullYear()} ಗಣೇಶ ಯಕ್ಷಗಾನ ಕಲಾ ಕೇಂದ್ರ. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ. (Powered by Firebase)</p>
-                </footer>
-            `;
-        }
-
-        // --- ADMIN VIEW RENDERERS (Unchanged logic, kept inside module) ---
-
-        function createAdminLoginView() {
-            return `
-                <div class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-                    <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md">
-                        <h2 class="text-3xl font-bold text-center mb-6 text-yak-dark">ನಿರ್ವಾಹಕ ಲಾಗಿನ್</h2>
-                        <form onsubmit="event.preventDefault(); handleAdminLogin();" class="space-y-4">
-                            <div>
-                                <label for="admin-password" class="block text-sm font-medium text-gray-700">ಪಾಸ್‌ವರ್ಡ್</label>
-                                <!-- Removed password hint, kept type="password" -->
-                                <input type="password" id="admin-password" placeholder="ಪಾಸ್‌ವರ್ಡ್" class="mt-1 w-full p-3 border border-gray-300 rounded-lg focus:ring-yak-primary focus:border-yak-primary" required>
-                            </div>
-                            <button type="submit" class="w-full bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark transition duration-300">ಲಾಗಿನ್</button>
-                            <p id="login-message" class="text-center mt-3"></p>
-                        </form>
-                        <button onclick="window.state.activeSection='home'; renderApp();" class="mt-4 w-full text-sm text-gray-500 hover:text-yak-dark transition duration-300">
-                           ಸಾರ್ವಜನಿಕ ಸೈಟ್‌ಗೆ ಹಿಂತಿರುಗಿ
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function createAdminDashboardView() {
-            return `
-                <div class="min-h-screen bg-gray-50">
-                    <!-- Admin Header -->
-                    <header class="bg-yak-dark text-white p-4 shadow-lg flex justify-between items-center">
-                        <h1 class="text-2xl font-bold text-yak-primary">ನಿರ್ವಾಹಕ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್</h1>
-                        <button onclick="handleAdminLogout();" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg transition duration-200">
-                            ಲಾಗ್‌ಔಟ್
-                        </button>
-                    </header>
-
-                    <!-- Admin Content -->
-                    <div class="p-6 max-w-7xl mx-auto">
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                            <button onclick="window.state.activeSection='admin-guru'; renderApp();" class="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-200 text-left font-semibold border-l-4 border-yak-primary">ಗುರುಗಳ ಸಂಪಾದನೆ</button>
-                            <button onclick="window.state.activeSection='admin-students'; renderApp();" class="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-200 text-left font-semibold border-l-4 border-yak-primary">ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ನಿರ್ವಹಿಸಿ</button>
-                            <button onclick="window.state.activeSection='admin-programs'; renderApp();" class="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-200 text-left font-semibold border-l-4 border-yak-primary">ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ನಿರ್ವಹಿಸಿ</button>
-                            <button onclick="window.state.activeSection='admin-gallery'; renderApp();" class="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-200 text-left font-semibold border-l-4 border-yak-primary">ಗ್ಯಾಲರಿ ಮತ್ತು QR</button>
-                        </div>
-
-                        ${renderAdminSection()}
-
-                    </div>
-                </div>
-            `;
-        }
-        
-        function renderAdminSection() {
-            switch (window.state.activeSection) {
-                case 'admin-guru': return renderGuruAdmin();
-                case 'admin-students': return renderStudentsAdmin();
-                case 'admin-programs': return renderProgramsAdmin();
-                case 'admin-gallery': return renderGalleryAdmin();
-                default:
-                    return `<div class="p-10 bg-white rounded-xl shadow-lg text-center text-xl text-gray-600">
-                        <p>ನಿರ್ವಹಿಸಲು ಮೇಲಿನ ಆಯ್ಕೆಗಳಲ್ಲಿ ಒಂದನ್ನು ಆರಿಸಿ.</p>
-                        <p class="mt-4 text-sm text-yak-dark">ಗಮನಿಸಿ: ವಾಟ್ಸಾಪ್ ಮೂಲಕ ಸಲ್ಲಿಸಿದ ಅರ್ಜಿಗಳು ಫೈರ್‌ಸ್ಟೋರ್‌ಗೆ ಹೋಗುವುದಿಲ್ಲ. ಅವುಗಳನ್ನು ನೇರವಾಗಿ ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬೇಕು。</p>
-                    </div>`;
-            }
-        }
-
-        function renderGuruAdmin() {
-            const guru = window.state.data.guru;
-            return `
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-bold mb-6 text-yak-dark">ಗುರುಗಳ ಮಾಹಿತಿಯನ್ನು ಸಂಪಾದಿಸಿ</h3>
-                    ${window.state.adminEditGuru ? `
-                        <div class="space-y-4">
-                            <input type="text" id="admin-guru-name" placeholder="ಗುರುಗಳ ಹೆಸರು" value="${guru.name}" class="w-full p-3 border rounded-lg">
-                            <input type="text" id="admin-guru-image" placeholder="ಚಿತ್ರ URL (Image URL)" value="${guru.image}" class="w-full p-3 border rounded-lg">
-                            <textarea id="admin-guru-bio" placeholder="ಗುರುಗಳ ಬಗ್ಗೆ ಸಂಕ್ಷಿಪ್ತ ಮಾಹಿತಿ" class="w-full p-3 border rounded-lg h-32">${guru.bio}</textarea>
-                            <div class="flex space-x-4">
-                                <button onclick="saveGuruDetails();" class="flex-1 bg-green-600 text-white p-3 rounded-xl font-semibold hover:bg-green-700">ಉಳಿಸಿ</button>
-                                <button onclick="window.state.adminEditGuru=false; renderApp();" class="flex-1 bg-gray-400 text-white p-3 rounded-xl font-semibold hover:bg-gray-500">ರದ್ದುಮಾಡಿ</button>
-                            </div>
-                        </div>
-                    ` : `
-                        <div class="mb-4 p-4 border rounded-lg">
-                            <h4 class="font-bold">ಪ್ರಸ್ತುತ ಹೆಸರು: ${guru.name}</h4>
-                            <p class="text-sm truncate">ಪರಿಚಯ: ${guru.bio}</p>
-                            <img src="${guru.image}" class="w-20 h-20 object-cover mt-2 rounded-full">
-                        </div>
-                        <button onclick="window.state.adminEditGuru=true; renderApp();" class="bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark">ಸಂಪಾದಿಸಿ</button>
-                    `}
-                </div>
-            `;
-        }
-        
-        function renderStudentsAdmin() {
-            const studentToEdit = window.state.data.students.find(s => s.id === window.state.adminEditStudent);
-
-            return `
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-bold mb-6 text-yak-dark">ಯಶಸ್ವಿ ವಿದ್ಯಾರ್ಥಿಗಳ ನಿರ್ವಹಣೆ</h3>
-                    <!-- Add/Edit Form -->
-                    <div class="mb-8 border p-6 rounded-xl bg-gray-50">
-                        <h4 class="text-xl font-bold mb-4">${studentToEdit ? 'ವಿದ್ಯಾರ್ಥಿ ಮಾಹಿತಿ ಸಂಪಾದಿಸಿ' : 'ಹೊಸ ವಿದ್ಯಾರ್ಥಿಯನ್ನು ಸೇರಿಸಿ'}</h4>
-                        <form onsubmit="event.preventDefault(); saveStudentDetails(${!studentToEdit}, '${studentToEdit ? studentToEdit.id : ''}');" class="space-y-3">
-                            <input type="text" id="admin-student-name" placeholder="ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು" value="${studentToEdit ? studentToEdit.name : ''}" class="w-full p-2 border rounded-lg">
-                            <input type="text" id="admin-student-photo" placeholder="ಚಿತ್ರ URL" value="${studentToEdit ? studentToEdit.photo : ''}" class="w-full p-2 border rounded-lg">
-                            <textarea id="admin-student-review" placeholder="ಸಂಕ್ಷಿಪ್ತ ವಿಮರ್ಶೆ" class="w-full p-2 border rounded-lg h-20">${studentToEdit ? studentToEdit.review : ''}</textarea>
-                            <div class="flex space-x-4">
-                                <button type="submit" class="flex-1 bg-green-600 text-white p-3 rounded-xl font-semibold hover:bg-green-700">${studentToEdit ? 'ಸಂಪಾದನೆ ಉಳಿಸಿ' : 'ಸೇರಿಸಿ'}</button>
-                                ${studentToEdit ? `<button type="button" onclick="window.state.adminEditStudent=null; renderApp();" class="flex-1 bg-gray-400 text-white p-3 rounded-xl font-semibold hover:bg-gray-500">ರದ್ದುಮಾಡಿ</button>` : ''}
-                            </div>
-                        </form>
-                    </div>
-                    <!-- List -->
-                    <h4 class="text-xl font-bold mt-8 mb-4">ಪ್ರಸ್ತುತ ವಿದ್ಯಾರ್ಥಿಗಳು</h4>
-                    <div class="space-y-3">
-                        ${window.state.data.students.map(s => `
-                            <div class="flex justify-between items-center p-3 bg-white border rounded-lg shadow-sm">
-                                <div class="flex items-center space-x-3">
-                                    <img src="${s.photo}" class="w-10 h-10 rounded-full object-cover">
-                                    <div>
-                                        <p class="font-semibold">${s.name}</p>
-                                        <p class="text-sm text-gray-500 truncate max-w-xs">${s.review}</p>
-                                    </div>
-                                </div>
-                                <div class="space-x-2 flex-shrink-0">
-                                    <button onclick="window.state.adminEditStudent='${s.id}'; renderApp();" class="bg-blue-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-blue-600">ಸಂಪಾದಿಸಿ</button>
-                                    <button onclick="deleteStudent('${s.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600">ತೆಗೆದುಹಾಕಿ</button>
-                                </div>
-                            </div>
-                        `).join('') || '<p class="text-center text-gray-500">ಯಾವುದೇ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ。</p>'}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderProgramsAdmin() {
-            const programToEdit = window.state.data.programs.find(p => p.id === window.state.adminEditProgram);
-
-            return `
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-bold mb-6 text-yak-dark">ಕಾರ್ಯಕ್ರಮಗಳ ನಿರ್ವಹಣೆ</h3>
-
-                    <!-- Add/Edit Form -->
-                    <div class="mb-8 border p-6 rounded-xl bg-gray-50">
-                        <h4 class="text-xl font-bold mb-4">${programToEdit ? 'ಕಾರ್ಯಕ್ರಮ ಸಂಪಾದಿಸಿ' : 'ಹೊಸ ಕಾರ್ಯಕ್ರಮವನ್ನು ಸೇರಿಸಿ'}</h4>
-                        <form onsubmit="event.preventDefault(); saveProgramDetails(${!programToEdit}, '${programToEdit ? programToEdit.id : ''}');" class="space-y-3">
-                            <input type="text" id="admin-program-title" placeholder="ಕಾರ್ಯಕ್ರಮದ ಶೀರ್ಷಿಕೆ" value="${programToEdit ? programToEdit.title : ''}" class="w-full p-2 border rounded-lg">
-                            <textarea id="admin-program-details" placeholder="ದಿನಾಂಕ ಮತ್ತು ವಿವರಗಳು" class="w-full p-2 border rounded-lg h-20">${programToEdit ? programToEdit.details : ''}</textarea>
-                            <div class="flex space-x-4">
-                                <button type="submit" class="flex-1 bg-green-600 text-white p-3 rounded-xl font-semibold hover:bg-green-700">${programToEdit ? 'ಸಂಪಾದನೆ ಉಳಿಸಿ' : 'ಸೇರಿಸಿ'}</button>
-                                ${programToEdit ? `<button type="button" onclick="window.state.adminEditProgram=null; renderApp();" class="flex-1 bg-gray-400 text-white p-3 rounded-xl font-semibold hover:bg-gray-500">ರದ್ದುಮಾಡಿ</button>` : ''}
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- List -->
-                    <h4 class="text-xl font-bold mt-8 mb-4">ಪ್ರಸ್ತುತ ಕಾರ್ಯಕ್ರಮಗಳು</h4>
-                    <div class="space-y-3">
-                        ${window.state.data.programs.map(p => `
-                            <div class="flex justify-between items-center p-3 bg-white border rounded-lg shadow-sm">
-                                <div>
-                                    <p class="font-semibold">${p.title}</p>
-                                    <p class="text-sm text-gray-500 truncate max-w-xs">${p.details}</p>
-                                </div>
-                                <div class="space-x-2 flex-shrink-0">
-                                    <button onclick="window.state.adminEditProgram='${p.id}'; renderApp();" class="bg-blue-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-blue-600">ಸಂಪಾದಿಸಿ</button>
-                                    <button onclick="deleteProgram('${p.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600">ತೆಗೆದುಹಾಕಿ</button>
-                                </div>
-                            </div>
-                        `).join('') || '<p class="text-center text-gray-500">ಯಾವುದೇ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ。</p>'}
-                    </div>
-                </div>
-            `;
-        }
-
-        // UPDATED: QR Image upload management
-        function renderGalleryAdmin() {
-            const { suggestedAmount, collectionTotal, donationTotal, qrImageData } = window.state.data.qrData;
-            return `
-                <div class="bg-white p-8 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-bold mb-6 text-yak-dark">ಗ್ಯಾಲರಿ ಮತ್ತು ದೇಣಿಗೆ QR ಕೋಡ್ ನಿರ್ವಹಣೆ</h3>
-
-                    <!-- QR Code Amount and Counters -->
-                    <div class="mb-8 border p-6 rounded-xl bg-gray-50">
-                        <h4 class="text-xl font-bold mb-4">ದೇಣಿಗೆ ಮತ್ತು ಕಲೆಕ್ಷನ್ ಮೊತ್ತಗಳನ್ನು ನಿರ್ವಹಿಸಿ</h4>
-                        <form onsubmit="event.preventDefault(); saveQRCodeData();" class="space-y-4">
-                            <label class="block text-sm font-medium text-gray-700">ಶಿಫಾರಸು ಮಾಡಿದ ದೇಣಿಗೆ ಮೊತ್ತ (ಸಾರ್ವಜನಿಕರಿಗೆ)</label>
-                            <input type="text" id="admin-qr-suggested" placeholder="ಉದಾ: 500.00" value="${suggestedAmount}" class="w-full p-2 border rounded-lg">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4">ಕಲೆಕ್ಷನ್ ಒಟ್ಟು ಮೊತ್ತ (ಕೌಂಟರ್)</label>
-                            <input type="number" id="admin-qr-collection" placeholder="ಪ್ರಸ್ತುತ ಕಲೆಕ್ಷನ್ ಮೊತ್ತ" value="${collectionTotal}" class="w-full p-2 border rounded-lg">
-                            
-                            <label class="block text-sm font-medium text-gray-700 mt-4">ದೇಣಿಗೆ ಒಟ್ಟು ಮೊತ್ತ (ಕೌಂಟರ್)</label>
-                            <input type="number" id="admin-qr-donation" placeholder="ಪ್ರಸ್ತುತ ದೇಣಿಗೆ ಮೊತ್ತ" value="${donationTotal}" class="w-full p-2 border rounded-lg">
-                            
-                            <!-- QR Image Upload Section -->
-                            <div class="pt-4 border-t mt-4">
-                                <h5 class="text-lg font-bold mb-4">QR ಕೋಡ್ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (300KB ಮಿತಿ)</h5>
-                                
-                                <div class="text-center mb-4 p-4 border border-gray-300 rounded-lg">
-                                    <h6 class="text-sm font-semibold mb-2">ಪ್ರಸ್ತುತ ಚಿತ್ರ:</h6>
-                                    <!-- Use the state data for preview on load -->
-                                    <img id="admin-qr-preview" 
-                                         src="${qrImageData || DEFAULT_QR_IMAGE_DATA}" 
-                                         onerror="alertMessage('QR ಚಿತ್ರದ ನಿರ್ವಾಹಕ ಪೂರ್ವವೀಕ್ಷಣೆ ಲೋಡ್ ಆಗಲಿಲ್ಲ.', true); this.onerror=null;this.src='https://placehold.co/100x100/A0A0A0/000000?text=QR+Missing';" 
-                                         alt="Current QR Code" class="w-32 h-32 object-contain mx-auto rounded-lg border-2 border-yak-dark">
-                                    <p class="text-xs text-gray-500 mt-2 truncate">${qrImageData.length > 50 ? 'Base64 Data URI' : qrImageData}</p>
-                                </div>
-                                
-                                <div class="file-input-container">
-                                    <input type="file" id="admin-qr-image-upload" accept="image/*" onchange="handleFileSelectAndConvert(event);" class="hidden-file-input">
-                                    <label for="admin-qr-image-upload" class="custom-file-upload">
-                                        ಚಿತ್ರವನ್ನು ಆರಿಸಿ (Choose Image)
-                                    </label>
-                                    <p class="text-xs text-gray-500 mt-2">QR ಚಿತ್ರವನ್ನು ಬದಲಾಯಿಸಲು ಹೊಸ ಫೈಲ್ ಆರಿಸಿ.</p>
-                                </div>
-                                
-                                <!-- HIDDEN INPUT: Stores the Base64 data to be saved to Firestore. -->
-                                <!-- It is initialized with the current qrImageData from state. -->
-                                <input type="hidden" id="admin-qr-base64-data" value="${qrImageData || DEFAULT_QR_IMAGE_DATA}">
-                            </div>
-                            <!-- End QR Image Upload Section -->
-
-                            <button type="submit" class="w-full bg-yak-primary text-white p-3 rounded-xl font-semibold hover:bg-yak-dark">ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಉಳಿಸಿ</button>
-                        </form>
-                        <p class="mt-4 text-sm text-gray-600">ಗಮನಿಸಿ: ಈ ಮೊತ್ತಗಳು ಕೌಂಟರ್‌ಗಳಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. ವಾಸ್ತವಿಕ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಿದ ನಂತರ ನೀವು ಇಲ್ಲಿ ಕೈಯಾರೆ (Manually) ಅಪ್ಡೇಟ್ ಮಾಡಬಹುದು。</p>
-                    </div>
-
-                    <!-- Gallery Add Form -->
-                    <div class="mb-8 border p-6 rounded-xl bg-gray-50">
-                        <h4 class="text-xl font-bold mb-4">ಗ್ಯಾಲರಿಗೆ ಫೋಟೋ/ವಿಡಿಯೋ (URL) ಸೇರಿಸಿ</h4>
-                        <div class="flex space-x-3">
-                            <input type="url" id="admin-gallery-url" placeholder="ಚಿತ್ರ ಅಥವಾ YouTube ವಿಡಿಯೋ URL" class="flex-1 p-2 border rounded-lg">
-                            <button onclick="addGalleryItem();" class="bg-green-600 text-white p-2 px-4 rounded-xl font-semibold hover:bg-green-700">ಸೇರಿಸಿ</button>
-                        </div>
-                    </div>
-
-                    <!-- Gallery List -->
-                    <h4 class="text-xl font-bold mt-8 mb-4">ಪ್ರಸ್ತುತ ಗ್ಯಾಲರಿ ಐಟಂಗಳು</h4>
-                    <div class="space-y-3">
-                        ${window.state.data.gallery.map(item => `
-                            <div class="flex justify-between items-center p-3 bg-white border rounded-lg shadow-sm">
-                                <div class="truncate max-w-md">
-                                    <p class="font-semibold">${item.type === 'video' ? 'ವಿಡಿಯೋ' : 'ಚಿತ್ರ'}</p>
-                                    <p class="text-sm text-gray-500 truncate">${item.url}</p>
-                                </div>
-                                <button onclick="deleteGalleryItem('${item.id}');" class="bg-red-500 text-white p-1 px-3 rounded-lg text-sm hover:bg-red-600 flex-shrink-0">ತೆಗೆದುಹಾಕಿ</button>
-                            </div>
-                        `).join('') || '<p class="text-center text-gray-500">ಗ್ಯಾಲರಿಯಲ್ಲಿ ಯಾವುದೇ ಐಟಂಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ。</p>'}
-                    </div>
-                </div>
-            `;
-        }
-
-
-        // --- MAIN RENDER LOOP ---
-
-        window.renderApp = () => {
-            const appDiv = document.getElementById('app');
-
-            if (window.state.loading) {
-                 appDiv.innerHTML = `<div class="min-h-screen flex items-center justify-center text-2xl font-semibold text-yak-dark">
-                    <svg class="animate-spin -ml-1 mr-3 h-8 w-8 text-yak-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...
-                </div>`;
-                return;
-            }
-
-            if (window.state.isAdminLoggedIn) {
-                appDiv.innerHTML = createAdminDashboardView();
-            } else if (window.state.activeSection === 'admin-login') {
-                appDiv.innerHTML = createAdminLoginView();
-            } else {
-                appDiv.innerHTML = createPublicView();
-            }
-
-            // Simple hash navigation/scrolling
-            if (window.state.activeSection.startsWith('#')) {
-                // Use setTimeout to ensure the DOM is fully updated before attempting to scroll
-                setTimeout(() => {
-                    document.querySelector(window.state.activeSection)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Reset activeSection to 'home' or equivalent after scrolling on re-render
-                    window.state.activeSection = 'home'; 
-                }, 100); 
-            }
-        };
-
-        // --- APPLICATION STARTUP ---
-        window.onload = initFirebase;
-    </script>
+  `;
+  modal.appendChild(box); document.body.appendChild(modal);
+  // focus first field for convenience
+  const firstInput = box.querySelector('input, textarea, button'); if(firstInput) firstInput.focus();
+  wireAdmin(box,modal);
+}
+
+function wireAdmin(container, modal){
+  const guruUrl = container.querySelector('#guruUrl');
+  const guruNameInput = container.querySelector('#guruNameInput');
+  const guruDescInput = container.querySelector('#guruDescInput');
+  const saveGuru = container.querySelector('#saveGuru');
+
+  const qrUrl = container.querySelector('#qrUrl');
+  const saveQR = container.querySelector('#saveQR');
+
+  const galleryUrl = container.querySelector('#galleryUrl');
+  const galleryCaption = container.querySelector('#galleryCaption');
+  const addGalleryUrl = container.querySelector('#addGalleryUrl');
+
+  const videoUrl = container.querySelector('#videoUrl');
+  const videoCaption = container.querySelector('#videoCaption');
+  const addVideoUrl = container.querySelector('#addVideoUrl');
+
+  const addEvent = container.querySelector('#addEvent');
+  const ev_title = container.querySelector('#ev_title');
+  const ev_date = container.querySelector('#ev_date');
+  const ev_desc = container.querySelector('#ev_desc');
+
+  const saveCounters = container.querySelector('#saveCounters');
+  const counter_collected = container.querySelector('#counter_collected');
+  const counter_goal = container.querySelector('#counter_goal');
+
+  const adminLists = container.querySelector('#adminLists');
+  const closeAdmin = container.querySelector('#closeAdmin');
+  const refreshAdmin = container.querySelector('#refreshAdmin');
+
+  // save guru (URL)
+  saveGuru.addEventListener('click', async ()=>{
+    const url = (guruUrl.value||'').trim(); const name = (guruNameInput.value||'').trim(); const desc = (guruDescInput.value||'').trim();
+    if(!url){ if(!confirm('ಗುರು ಚಿತ್ರ URL ನೀಡಿಲ್ಲ. ಮುಂದುವರೆಯಲು OK ಕ್ಲಿಕ್ ಮಾಡಿ (ಇದರಿಂದ ಮಾತ್ರ ಹೆಸರು/ವಿವರಣೆ ಅಪ್ಡೇಟ್ ಆಗುತ್ತದೆ).')){
+      return; }
+    }
+    try{ await setDoc(doc(db,'meta','guru'),{photoUrl: url||'', name: name||'ಶುಬ್ರಾಯ ಪದಕನ್ನಯ್ಯ, ಬಾಯಾರು', desc: desc||''}); alert('ಗುರು ವಿವರ ಉಳಿಸಲಾಗಿದೆ'); }catch(err){ console.error('saveGuru',err); alert('ಗುರು ಉಳಿಸಲು ವಿಫಲ'); }
+  });
+
+  // save QR URL
+  saveQR.addEventListener('click', async ()=>{
+    const url = (qrUrl.value||'').trim(); if(!url){ alert('QR URL ನಮೂದಿಸಿ'); return; }
+    try{ await setDoc(doc(db,'meta','qr'),{url}); alert('QR ಉಳಿಸಿದೆ'); }catch(err){ console.error('saveQR',err); alert('QR ಉಳಿಸಲು ವಿಫಲ'); }
+  });
+
+  // add gallery by URL
+  addGalleryUrl.addEventListener('click', async ()=>{
+    const url = (galleryUrl.value||'').trim(); const cap = (galleryCaption.value||'').trim(); if(!url){ alert('ಚಿತ್ರ URL ನಮೂದಿಸಿ'); return; }
+    try{ await addDoc(collection(db,'gallery'),{url,caption:cap,createdAt: Date.now()}); galleryUrl.value=''; galleryCaption.value=''; alert('ಗ್ಯಾಲರಿ URL ಉಳಿಸಲಾಗಿದೆ'); }catch(err){ console.error('addGalleryUrl',err); alert('ಗ್ಯಾಲರಿ ಸೇರ್ಪಡೆ ವಿಫಲ'); }
+  });
+
+  // add video by URL/embed
+  addVideoUrl.addEventListener('click', async ()=>{
+    const v = (videoUrl.value||'').trim(); const cap = (videoCaption.value||'').trim(); if(!v){ alert('ವೀಡಿಯೊ URL ಅಥವಾ embed ನಮೂದಿಸಿ'); return; }
+    // store as url or embed
+    const payload = {createdAt: Date.now()};
+    if(v.startsWith('<iframe') || v.includes('<iframe')){ payload.embed = v; }
+    else { payload.url = v; }
+    if(cap) payload.caption = cap;
+    try{ await addDoc(collection(db,'videos'),payload); videoUrl.value=''; videoCaption.value=''; alert('ವೀಡಿಯೊ ಉಳಿಸಲಾಗಿದೆ'); }catch(err){ console.error('addVideoUrl',err); alert('ವೀಡಿಯೊ ಉಳಿಸಲು ವಿಫಲ'); }
+  });
+
+  // add event
+  addEvent.addEventListener('click', async ()=>{
+    const title = (ev_title.value||'').trim(); const date = (ev_date.value||'').trim(); const desc = (ev_desc.value||'').trim(); if(!title){ alert('ಶೀರ್ಷಿಕೆ ನಮೂದಿಸಿ'); return; }
+    try{ await addDoc(collection(db,'events'),{title,date,desc,createdAt: Date.now()}); ev_title.value=''; ev_date.value=''; ev_desc.value=''; alert('ಕಾರ್ಯಕ್ರಮ ಸೇರ್ಪಡೆ ಆಗಿದೆ'); }catch(err){ console.error('addEvent',err); alert('ಕಾರ್ಯಕ್ರಮ ಸೇರಿಸಲು ವಿಫಲ'); }
+  });
+
+  // save counters
+  saveCounters.addEventListener('click', async ()=>{
+    const collected = Number(counter_collected.value||0); const donationGoal = Number(counter_goal.value||0);
+    try{ await setDoc(doc(db,'meta','counters'),{collected,donationGoal}); alert('ಕೌಂಟರ್ಸ್ ಉಳಿಸಲಾಗಿದೆ'); }catch(err){ console.error('saveCounters',err); alert('ಕೌಂಟರ್ಸ್ ಉಳಿಸಲು ವಿಫಲ'); }
+  });
+
+  // close & refresh
+  closeAdmin.addEventListener('click',()=>{ modal.remove(); });
+  refreshAdmin.addEventListener('click',()=>{ loadAdminLists(adminLists); });
+
+  // load lists
+  loadAdminLists(adminLists);
+}
+
+// admin lists: gallery, videos, events with delete
+async function loadAdminLists(container){
+  container.innerHTML = '<p class="small">ಲೋಡ್ ಆಗುತ್ತಿದೆ...</p>';
+  try{
+    container.innerHTML = '';
+    // gallery
+    const gsnap = await getDocs(query(collection(db,'gallery'), orderBy('createdAt','desc')));
+    const gdiv = document.createElement('div'); gdiv.innerHTML = '<h4>ಗ್ಯಾಲರಿ</h4>';
+    gsnap.forEach(d=>{ const v=d.data(); const id=d.id; const row=document.createElement('div'); row.className='list-item'; row.innerHTML = `<div style="flex:1;overflow:hidden">${v.url}</div><div><button data-id="${id}" data-type="gallery" class="btn-gold">ತೆಗೆದುಹಾಕಿ</button></div>`; gdiv.appendChild(row); });
+    container.appendChild(gdiv);
+    // videos
+    const vsnap = await getDocs(query(collection(db,'videos'), orderBy('createdAt','desc')));
+    const vdiv = document.createElement('div'); vdiv.innerHTML = '<h4>ವೀಡಿಯೊಗಳು</h4>';
+    vsnap.forEach(d=>{ const v=d.data(); const id=d.id; const content = v.url||v.embed||''; const row=document.createElement('div'); row.className='list-item'; row.innerHTML = `<div style="flex:1;overflow:hidden">${content}</div><div><button data-id="${id}" data-type="videos" class="btn-gold">ತೆಗೆದುಹಾಕಿ</button></div>`; vdiv.appendChild(row); });
+    container.appendChild(vdiv);
+    // events
+    const esnap = await getDocs(query(collection(db,'events'), orderBy('date','asc')));
+    const ediv = document.createElement('div'); ediv.innerHTML = '<h4>ಕಾರ್ಯಕ್ರಮಗಳು</h4>';
+    esnap.forEach(d=>{ const v=d.data(); const id=d.id; const row=document.createElement('div'); row.className='list-item'; row.innerHTML = `<div style="flex:1;overflow:hidden">${v.title} (${v.date})</div><div><button data-id="${id}" data-type="events" class="btn-gold">ತೆಗೆದುಹಾಕಿ</button></div>`; ediv.appendChild(row); });
+    container.appendChild(ediv);
+
+    // attach delete handlers
+    container.querySelectorAll('button[data-id]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = btn.getAttribute('data-id'); const type = btn.getAttribute('data-type');
+        if(!confirm('ನಿಖರವಾಗಿ ತೆಗೆಯಬೇಕೆ?')) return;
+        try{ await deleteDoc(doc(db,type,id)); alert('ಐಟಂ ಅಳಿಸಲಾಗಿದೆ'); loadAdminLists(container); }catch(err){ console.error('deleteItem',err); alert('ಅಳಿಸಲು ವಿಫಲ'); }
+      });
+    });
+
+  }catch(err){ console.error('loadAdminLists',err); container.innerHTML = '<p class="small">ಲೋಡ್ ವಿಫಲ</p>'; }
+}
+
+  </script>
 </body>
 </html>
