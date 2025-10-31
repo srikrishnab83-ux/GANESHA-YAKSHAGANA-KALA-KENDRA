@@ -56,7 +56,7 @@
   /* Gallery grid */
   .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:10px;}
   .gal-item{background:#fff;border-radius:10px;overflow:hidden;border:2px solid rgba(230,184,0,0.12);padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-  .gal-item img{width:100%;height:120px;object-fit:cover;border-radius:8px;}
+  .gal-item img{width:100%;height:120px;object-fit:cover;border-radius:8px;cursor:pointer;}
   .gal-caption{font-size:13px;color:var(--muted);margin-top:8px;text-align:center;}
 
   /* Video list */
@@ -94,7 +94,7 @@
   .btn-red{background:var(--red);color:var(--gold);}
 
   /* Admin floating button */
-  .admin-fab{position:fixed;right:14px;bottom:18px;background:var(--red);color:var(--gold);border:none;padding:12px 14px;border-radius:999px;box-shadow:0 10px 24px rgba(0,0,0,0.18);font-weight:700;z-index:1500;cursor:pointer;}
+  .admin-fab{position:fixed;right:14px;bottom:18px;background:var(--red);color:var(--gold);border:none;padding:12px 14px;border-radius:999px;box-shadow:0 10px 24px rgba(0,0,0,0.18);font-weight:700;cursor:pointer;z-index:1500;}
   .admin-fab:active{transform:translateY(1px);}
 
   /* Admin modal (hidden by default; JS will open it) */
@@ -105,6 +105,10 @@
   .admin-row{display:flex;gap:8px;flex-wrap:wrap;}
   .admin-input{flex:1;min-width:120px;padding:8px;border-radius:8px;border:1px solid #ddd;}
   .admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;justify-content:flex-end;}
+
+  /* Image modal */
+  #imgModal{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:4000;padding:12px;}
+  #imgModal img{max-width:98%;max-height:92%;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.6);}
 
   /* Responsive tweaks */
   @media (min-width:720px){
@@ -137,7 +141,7 @@
       <div class="center">
         <img id="guruPhoto" class="guru-photo" src="https://via.placeholder.com/300x300?text=Guru" alt="ಗುರು ಫೋಟೋ (placeholder)">
         <div id="guruName" class="guru-name">ಸೂರ್ಯನಾರಾಯಣ ಪದಕಣ್ಣಾಯ, ಬಾಯಾರು</div>
-        <p id="guruDesc" class="guru-desc">ತೆಂಕು ತಿಟ್ಟಿನ ಯಕ್ಷಗಾನ ತರಗತಿ — ಅನುಭವಶೀಲ ಗುರು ಹಾಗೂ ಶೈક્ષણಿಕ ಮಾರ್ಗದರ್ಶಿ.</p>
+        <p id="guruDesc" class="guru-desc">ತೆಂಕು ತಿಟ್ಟಿನ ಯಕ್ಷಗಾನ ತರಗತಿ — ಅನುಭವಶೀಲ ಗುರು ಹಾಗೂ ಶೈಕ್ಷಣಿಕ ಮಾರ್ಗದರ್ಶಿ.</p>
       </div>
     </section>
 
@@ -151,7 +155,7 @@
     <section class="card" aria-label="ಗ್ಯಾಲರಿ">
       <div class="section-title">ಗ್ಯಾಲರಿ</div>
       <div id="galleryGrid" class="gallery-grid">
-        <!-- placeholders replaced from Firestore -->
+        <!-- placeholders replaced from Firestore; kept initial samples -->
         <div class="gal-item"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Yakshagana_artists_performing.jpg" alt="sample"><div class="gal-caption">ವಿದ್ಯಾರ್ಥಿಗಳು - ತರಬೇತಿ</div></div>
         <div class="gal-item"><img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Yakshagana_performance.jpg" alt="sample"><div class="gal-caption">ಪ್ರದರ್ಶನ</div></div>
       </div>
@@ -162,11 +166,9 @@
       <div class="section-title">ವೀಡಿಯೊಗಳು</div>
       <div id="videosList">
         <!-- placeholders replaced from Firestore -->
-        <div class="video-item"><iframe src="https://www.youtube.com/embed/Jx8D4N1xWso" title="video sample" allowfullscreen></iframe></div>
+        <div class="video-item"><iframe src="https://www.youtube.com/embed/Jx8D4N1xWso" title="video sample" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
       </div>
     </section>
-
-    <!-- Donation counters and QR are moved below Admission (kept later) -->
 
     <!-- Successful Students -->
     <section class="card" aria-label="ಯಶಸ್ವಿ ವಿದ್ಯಾರ್ಥಿಗಳು">
@@ -186,7 +188,7 @@
       </div>
     </section>
 
-    <!-- Invitation (fixed text) -->
+    <!-- Invitation -->
     <section class="card invitation" aria-label="ಆಹ್ವಾನ">
       <h3>🎭 ಹೊಸ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಆಹ್ವಾನ!</h3>
       <p>ನಮ್ಮ ತೆಂಕು ತಿಟ್ಟು ನೃತ್ಯ ತರಗತಿಗೆ ಹೊಸ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಆಹ್ವಾನಿಸುತ್ತಿದ್ದೇವೆ. ವಯೋಮಿತಿ 12 ವರ್ಷಗಳಿಂದ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ.<br>ಯಕ್ಷಗಾನ ಕಲೆಯನ್ನು ಕಲಿಯಲು ಆಸಕ್ತರು ಈಗಲೇ ಸಂಪರ್ಕಿಸಿ!</p>
@@ -209,10 +211,10 @@
       </div>
     </section>
 
-    <!-- Programme Booking (NEW) -->
+    <!-- Programme Booking -->
     <section class="card" aria-label="ಕಾರ್ಯಕ್ರಮ ಬುಕ್ಕಿಂಗ್">
       <div class="section-title">ಕಾರ್ಯಕ್ರಮ ಬುಕ್ಕಿಂಗ್</div>
-      <p class="muted">ಕಾರ್ಯಕ್ರಮಕ್ಕೆ ಬುಕಿಂಗ್ ಮಾಡಲು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಭರ್ತಿ ಮಾಡಿ — ಬುಕಿಂಗ್ ವಿವರಗಳು WhatsApp ಮೂಲಕ ಕಳುಹಿಸಲಾಗುತ್ತದೆ.</p>
+      <p class="muted">ಕಾರ್ಯಕ್ರಮಕ್ಕೆ ಬುಕಿಂಗ್ ಮಾಡಲು ಕೆಳಗಿನ ಫಾರ್ಮ್ ಭರ್ತಿ ಮಾಡಿ — ಬುಕಿಂಗ್ ವಿವರಗಳು WhatsApp ಮೂಲಕ ಕಳುಹಿಸಲ್ಪಡುತ್ತವೆ.</p>
       <div style="max-width:720px;margin:8px auto 0;">
         <div class="form-field"><label>ಹೆಸರು</label><input id="bk_name" type="text" placeholder="ಹೆಸರು"></div>
         <div class="form-field"><label>ಸ್ಥಳ</label><input id="bk_place" type="text" placeholder="ಸ್ಥಳ (ನಿಮ್ಮ ನಗರದ ಹೆಸರು)"></div>
@@ -252,7 +254,7 @@
         <div style="font-weight:700;color:var(--red);margin-bottom:6px">ದಾನ ಮಾಡಲು QR ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</div>
         <!-- replace placeholder with base64 or external url via admin -->
         <img id="qrImg" src="data:image/png;base64,PUT_YOUR_BASE64_QR_HERE" alt="Donation QR">
-        <div class="muted" style="margin-top:8px">ದಾನ ಮಾಡಿದ ನಂತರ ದಯವಿಟ್ಟು <a href="https://wa.me/qr/JGB3XSEHKWFDD1" target="_blank">WhatsApp ಮೂಲಕ ತಿಳಿಸಿ</a></div>
+        <div class="muted" style="margin-top:8px">ದಾನ ಮಾಡಿದ ನಂತರ ದಯವಿಟ್ಟು <a href="https://wa.me/919148014768" target="_blank">WhatsApp ಮೂಲಕ ತಿಳಿಸಿ</a></div>
       </div>
     </section>
 
@@ -287,7 +289,6 @@
       </div>
 
       <div id="adminControls" style="display:none;">
-
         <div class="admin-card">
           <div class="admin-title">ಘೋಷಣೆ ಸೇರಿಸಿ</div>
           <input id="admin_ann_title" class="admin-input" placeholder="ಶೀರ್ಷಿಕೆ">
@@ -320,7 +321,7 @@
         <div class="admin-card">
           <div class="admin-title">ಗ್ಯಾಲರಿ — ಹೊಸ ಚಿತ್ರ</div>
           <input id="admin_gallery_url" class="admin-input" placeholder="ಚಿತ್ರ URL">
-          <input id="admin_gallery_caption" class="admin-input" placeholder="ಶೀರ್ಷಿಕೆ (ಐಚ್ಛಿಕ)">
+          <input id="admin_gallery_caption" class="admin-input" placeholder="ಶೀర్షಿಕೆ (ಐಚ್ಛಿಕ)">
           <div class="admin-actions"><button id="addGalleryBtn" class="btn">ಸೇರಿಸಿ</button></div>
         </div>
 
@@ -350,7 +351,7 @@
         <div class="admin-card">
           <div class="admin-title">ಮಾಡಿರುವ ಐಟಂಗಳು (ಅಳಿಸಲು ಆಯ್ಕೆ)</div>
           <div id="adminLists" style="max-height:240px;overflow:auto;"></div>
-          <div class="admin-actions" style="margin-top:8px;"><button id="refreshAdminBtn" class="btn">ರಿಫ್ರೆಶ್</button></div>
+          <div class="admin-actions" style="margin-top:8px;"><button id="refreshAdminBtn" class="btn">ರಿಫ್ರೇಶ್</button></div>
         </div>
 
       </div> <!-- adminControls end -->
@@ -358,14 +359,21 @@
     </div> <!-- admin-sheet end -->
   </div> <!-- admin-modal end -->
 
-  <!-- Firebase + JS -->
+  <!-- Image modal for fullscreen gallery view -->
+  <div id="imgModal" aria-hidden="true"><img src="" alt="fullscreen image"></div>
+
+  <!-- Part 2: Firebase + JS -->
   <script type="module">
+    /* -------------------------------
+       Firebase + Admin Logic
+       ------------------------------- */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import {
       getFirestore, collection, addDoc, getDocs, onSnapshot,
       doc, setDoc, deleteDoc, query, orderBy
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+    // Keep same Firebase project (as you requested)
     const firebaseConfig = {
       apiKey: "AIzaSyC8vMaKYBeZ93LKBcBNOjdqbsgxCJV9MyU",
       authDomain: "yaksha-admin.firebaseapp.com",
@@ -379,17 +387,20 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    /* ---------- Admission → WhatsApp ---------- */
+    /* ---------- WhatsApp: Admission & Booking (fixed) ---------- */
+    // Uses phone number: +91 91480 14768 (same for both)
+    const WA_NUMBER = '919148014768';
+
     window.openWhatsAppForAdmission = function(){
       const n=document.getElementById('ad_name').value.trim();
       const a=document.getElementById('ad_age').value.trim();
       const p=document.getElementById('ad_phone').value.trim();
       const m=document.getElementById('ad_msg').value.trim();
-      const text=encodeURIComponent(`ಪ್ರವೇಶ ವಿನಂತಿ:\nಹೆಸರು: ${n}\nವಯಸ್ಸು: ${a}\nಮೊಬೈಲ್: ${p}\nಸಂದೇಶ: ${m}`);
-      window.open(`https://wa.me/qr/JGB3XSEHKWFDD1?text=${text}`,'_blank');
+      const text=encodeURIComponent(`ಪ್ರವೇಶ வೃತ್ತಿ:\nಹೆಸರು: ${n}\nವಯಸ್ಸು: ${a}\nಮೊ바일್: ${p}\nಸಂದೇಶ: ${m}`);
+      // Open direct chat using standard wa.me API with number + message
+      window.open(`https://wa.me/${WA_NUMBER}?text=${text}`,'_blank');
     }
 
-    /* ---------- Programme Booking → WhatsApp ---------- */
     window.submitBooking = function(){
       const name=document.getElementById('bk_name').value.trim();
       const place=document.getElementById('bk_place').value.trim();
@@ -409,10 +420,10 @@
       const text = encodeURIComponent(
         `ಕಾರ್ಯಕ್ರಮ ಬುಕಿಂಗ್:\nಹೆಸರು: ${name}\nಸ್ಥಳ: ${place}\nಕಾರ್ಯಕ್ರಮ ಸ್ಥಳ: ${progPlace}\nದಿನಾಂಕ: ${date}\nಸಮಯ: ${time}\nಮೊತ್ತ: ${amount}`
       );
-      window.open(`https://wa.me/qr/JGB3XSEHKWFDD1?text=${text}`,'_blank');
+      window.open(`https://wa.me/${WA_NUMBER}?text=${text}`,'_blank');
     }
 
-    /* ---------- Real-time Data Bindings ---------- */
+    /* ---------- Elements references ---------- */
     const guruPhoto=document.getElementById('guruPhoto');
     const guruDesc=document.getElementById('guruDesc');
     const guruNameEl=document.getElementById('guruName');
@@ -424,9 +435,11 @@
     const goalEl=document.getElementById('goal');
     const announcementsList=document.getElementById('announcementsList');
 
+    /* ---------- Render helpers (with fixes) ---------- */
+    // Gallery render — attaches click listener for fullscreen viewing
     const renderGallery=(arr)=>{
       galleryGrid.innerHTML='';
-      if(!arr.length){
+      if(!arr || !arr.length){
         galleryGrid.innerHTML = '<div class="muted center">ಇದೀಗ ಯಾವುದೇ ಚಿತ್ರಗಳಿಲ್ಲ</div>';
         return;
       }
@@ -434,33 +447,66 @@
         const div=document.createElement('div');
         div.className='gal-item';
         const img=document.createElement('img');
-        img.src=x.url; img.onerror=()=>img.remove();
+        img.src=x.url||''; img.alt = x.caption || '';
+        img.onerror=()=>{ if(img.parentNode) img.parentNode.remove(); };
+        // click to open fullscreen
+        img.addEventListener('click',()=>openImageModal(img.src));
         div.appendChild(img);
         if(x.caption){const c=document.createElement('div');c.className='gal-caption';c.textContent=x.caption;div.appendChild(c);}
         galleryGrid.appendChild(div);
       });
     };
 
+    // Videos: sanitize various YouTube URL formats and create embed iframe
+    const toYouTubeEmbed = (url) => {
+      if(!url) return '';
+      url = url.trim();
+      try {
+        // If already embed
+        if(url.includes('youtube.com/embed/')) {
+          return url.split('&')[0];
+        }
+        // watch?v=VIDEOID
+        if(url.includes('watch?v=')){
+          const id = url.split('watch?v=')[1].split('&')[0];
+          return `https://www.youtube.com/embed/${id}`;
+        }
+        // youtu.be/VIDEOID
+        if(url.includes('youtu.be/')){
+          const id = url.split('youtu.be/')[1].split('?')[0];
+          return `https://www.youtube.com/embed/${id}`;
+        }
+        // If given only an ID
+        if(/^[A-Za-z0-9_-]{6,}$/.test(url)) return `https://www.youtube.com/embed/${url}`;
+      } catch(e){ return ''; }
+      return '';
+    };
+
     const renderVideos=(arr)=>{
       videosList.innerHTML='';
-      if(!arr.length){
+      if(!arr || !arr.length){
         videosList.innerHTML = '<div class="muted center">ಇದೀಗ ಯಾವುದೇ ವೀಡಿಯೊಗಳಿಲ್ಲ</div>';
         return;
       }
       arr.forEach(x=>{
-        const d=document.createElement('div');d.className='video-item';
-        let url=x.url||'';
-        if(url.includes('watch?v=')) url=url.replace('watch?v=','embed/');
-        // ensure embed url begins with https://www.youtube.com/embed/ or already an embed url
+        const d=document.createElement('div'); d.className='video-item';
+        let embedUrl = toYouTubeEmbed(x.url || '');
+        if(!embedUrl){
+          // skip invalid urls
+          return;
+        }
         const iframe=document.createElement('iframe');
-        iframe.src=url; iframe.allow='accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture'; iframe.allowFullscreen=true;
-        d.appendChild(iframe); videosList.appendChild(d);
+        iframe.src=embedUrl;
+        iframe.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.setAttribute('allowfullscreen','');
+        d.appendChild(iframe);
+        videosList.appendChild(d);
       });
     };
 
     const renderStudents=(arr)=>{
       studentsGrid.innerHTML='';
-      if(!arr.length){
+      if(!arr || !arr.length){
         studentsGrid.innerHTML = '<div class="muted center">ಇದೀಗ ಯಾವುದೇ ವಿದ್ಯಾರ್ಥಿಗಳ ಮಾಹಿತಿ ಇಲ್ಲ</div>';
         return;
       }
@@ -473,13 +519,12 @@
 
     const renderAnnouncements=(arr)=>{
       announcementsList.innerHTML='';
-      if(!arr.length){
+      if(!arr || !arr.length){
         announcementsList.innerHTML = '<p class="muted center">ಇದೀಗ ಯಾವುದೇ ಘೋಷಣೆಗಳಿಲ್ಲ</p>';
         return;
       }
       arr.forEach(a=>{
-        const d=document.createElement('div');
-        d.className='announcement-item';
+        const d=document.createElement('div'); d.className='announcement-item';
         const t=document.createElement('div'); t.className='title'; t.textContent=a.title||'';
         const m=document.createElement('div'); m.className='msg'; m.textContent=a.msg||'';
         d.appendChild(t); d.appendChild(m);
@@ -487,6 +532,7 @@
       });
     };
 
+    /* ---------- Firestore real-time bindings ---------- */
     // meta/guru
     onSnapshot(doc(db,'meta','guru'),snap=>{
       if(snap.exists()){
@@ -527,7 +573,7 @@
       const arr=[]; snap.forEach(d=>arr.push({...d.data(),id:d.id})); renderAnnouncements(arr);
     });
 
-    /* ---------- Admin Popup Controls ---------- */
+    /* ---------- Admin Popup Controls (full restored + announcements) ---------- */
     const fab=document.getElementById('adminFab');
     const modal=document.getElementById('adminModal');
     const sheet=document.querySelector('.admin-sheet');
@@ -545,13 +591,12 @@
         adminControls.style.display='block';
         adminPwd.parentElement.style.display='none';
         loadAdminLists();
-        // prefill some admin fields from meta
-        getDocs(query(collection(db,'meta'))).catch(()=>{});
       } else alert('⚠️ ತಪ್ಪಾದ ಪಾಸ್‌ವರ್ಡ್');
     };
 
     async function loadAdminLists(){
       adminLists.innerHTML='<p class="muted">ಲೋಡ್ ಆಗುತ್ತಿದೆ...</p>';
+      // list gallery, videos, events, students, announcements
       const sections=[['gallery','ಗ್ಯಾಲರಿ'],['videos','ವೀಡಿಯೊಗಳು'],['events','ಕಾರ್ಯಕ್ರಮಗಳು'],['students','ವಿದ್ಯಾರ್ಥಿಗಳು'],['announcements','ಘೋಷಣೆಗಳು']];
       let html='';
       for(const [col,label] of sections){
@@ -563,7 +608,7 @@
         } else {
           snap.forEach(d=>{
             const v=d.data();
-            const display = (v.title||v.name||v.caption||v.url||'ಐಟಮ್') .toString().slice(0,80);
+            const display = (v.title||v.name||v.caption||v.url||'ಐಟಮ್').toString().slice(0,80);
             html+=`<div class="admin-row" style="border-bottom:1px solid #eee;padding:6px 0;align-items:center;">
               <div style="flex:1;overflow:hidden;font-size:13px;">${display}</div>
               <button class="btn" onclick="delItem('${col}','${d.id}')">ಅಳಿಸು</button>
@@ -577,12 +622,11 @@
     window.delItem=async function(col,id){
       if(confirm('ನಿಖರವಾಗಿ ಅಳಿಸಬೇಕೆ?')){
         await deleteDoc(doc(db,col,id));
-        // refresh lists
-        setTimeout(()=>loadAdminLists(), 500);
+        setTimeout(()=>loadAdminLists(), 400);
       }
     }
 
-    /* ---------- Save buttons (admin actions) ---------- */
+    /* ---------- Admin actions: save / add ---------- */
     document.getElementById('saveGuruBtn').onclick=async()=>{
       await setDoc(doc(db,'meta','guru'),{
         photoUrl:document.getElementById('admin_guru_photo').value || '',
@@ -604,7 +648,7 @@
     document.getElementById('addGalleryBtn').onclick=async()=>{
       const url=document.getElementById('admin_gallery_url').value.trim();
       const caption=document.getElementById('admin_gallery_caption').value.trim();
-      if(!url){ alert('ದಯವಿಟ್ಟು ಚಿತ್ರ URL ನೀಡಿರಿ'); return; }
+      if(!url){ alert('ದಯವಿಟ್ಟು ಚಿತ್ರ URL ನೀಡಿ'); return; }
       await addDoc(collection(db,'gallery'),{url,caption,createdAt:Date.now()});
       alert('ಗ್ಯಾಲರಿ ಸೇರಿಸಲಾಗಿದೆ'); loadAdminLists();
       document.getElementById('admin_gallery_url').value=''; document.getElementById('admin_gallery_caption').value='';
@@ -635,13 +679,13 @@
       const desc=document.getElementById('admin_student_desc').value.trim();
       if(!name){ alert('ವಿದ್ಯಾರ್ಥಿ ಹೆಸರು ಅಗತ್ಯ'); return; }
       await addDoc(collection(db,'students'),{photoUrl:photo,name,desc,createdAt:Date.now()});
-      alert('ವಿದ್ಯಾರ್ಥಿ ಸೇರಿಸಲಾಗಿದೆ'); loadAdminLists();
+      alert('ವಿದ್ಯার্থী ಸೇರಿಸಲಾಗಿದೆ'); loadAdminLists();
       document.getElementById('admin_student_photo').value=''; document.getElementById('admin_student_name').value=''; document.getElementById('admin_student_desc').value='';
     };
 
     document.getElementById('refreshAdminBtn').onclick=()=>loadAdminLists();
 
-    /* Add Announcement */
+    /* Announcements: add & delete available via admin lists where announcements are listed */
     document.getElementById('addAnnBtn').onclick=async()=>{
       const title=document.getElementById('admin_ann_title').value.trim();
       const msg=document.getElementById('admin_ann_msg').value.trim();
@@ -651,7 +695,48 @@
       document.getElementById('admin_ann_title').value=''; document.getElementById('admin_ann_msg').value='';
     };
 
+    /* ---------- Image Modal logic (for gallery fullscreen) ---------- */
+    const imgModal = document.getElementById('imgModal');
+    const imgModalImg = imgModal.querySelector('img');
+    function openImageModal(src){
+      imgModalImg.src = src;
+      imgModal.style.display = 'flex';
+      imgModal.setAttribute('aria-hidden','false');
+    }
+    imgModal.addEventListener('click', () => {
+      imgModal.style.display = 'none';
+      imgModal.setAttribute('aria-hidden','true');
+      imgModalImg.src = '';
+    });
+
+    /* ---------- Initial: attach click handler to placeholder gallery images (already in DOM) ---------- */
+    document.querySelectorAll('#galleryGrid .gal-item img').forEach(img=>{
+      img.addEventListener('click', ()=> openImageModal(img.src));
+    });
+
+    /* ---------- Utility: convert common Youtube links to embed safe URL for any existing iframe placeholders ---------- */
+    function toEmbed(url){
+      if(!url) return '';
+      url = url.trim();
+      if(url.includes('youtube.com/embed/')) return url.split('&')[0];
+      if(url.includes('watch?v=')){
+        const id = url.split('watch?v=')[1].split('&')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      if(url.includes('youtu.be/')){
+        const id = url.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      if(/^[A-Za-z0-9_-]{6,}$/.test(url)) return `https://www.youtube.com/embed/${url}`;
+      return '';
+    }
+
+    // Fix any existing iframe srcs on load (placeholder embeds)
+    document.querySelectorAll('#videosList iframe').forEach(f=>{
+      const safe = toEmbed(f.src || f.getAttribute('data-src') || '');
+      if(safe) f.src = safe;
+    });
+
   </script>
 </body>
 </html>
-
